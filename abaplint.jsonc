@@ -434,18 +434,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "method_parameter_names": {
-      "exclude": [],
-      "severity": "Error",
-      "patternKind": "required",
-      "ignoreNames": [],
-      "ignorePatterns": [],
-      "ignoreExceptions": true,
-      "importing": "^I._.+$",
-      "returning": "^R._.+$",
-      "changing": "^C._.+$",
-      "exporting": "^E._.+$"
-    },
+    "method_parameter_names": false,
     "mix_returning": true,
     "modify_only_own_db_tables": {
       "exclude": [],
