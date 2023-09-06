@@ -1,5 +1,7 @@
 INTERFACE /iwbep/if_mgw_odata_property PUBLIC.
 
+  INTERFACES /iwbep/if_mgw_odata_annotatabl.
+
   ALIASES set_label_from_text_element
     FOR /iwbep/if_mgw_odata_item~set_label_from_text_element.
 

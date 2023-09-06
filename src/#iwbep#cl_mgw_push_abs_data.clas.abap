@@ -5,6 +5,8 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     INTERFACES /iwbep/if_mgw_conv_srv_runtime.
     INTERFACES /iwbep/if_mgw_appl_srv_runtime.
 
+    ALIASES copy_data_to_ref FOR /iwbep/if_mgw_conv_srv_runtime~copy_data_to_ref.
+
   PROTECTED SECTION.
     DATA mo_context TYPE REF TO /iwbep/if_mgw_context.
 
@@ -18,6 +20,10 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 ENDCLASS.
 
 CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
+
+  METHOD /iwbep/if_mgw_conv_srv_runtime~copy_data_to_ref.
+    RETURN.
+  ENDMETHOD.
 
   METHOD /iwbep/if_mgw_conv_srv_runtime~get_logger.
     RETURN.

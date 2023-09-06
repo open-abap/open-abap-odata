@@ -2,8 +2,8 @@ CLASS zcl_zsegw_dpc DEFINITION PUBLIC INHERITING FROM /iwbep/cl_mgw_push_abs_dat
 
   PUBLIC SECTION.
 
-    INTERFACES /iwbep/if_sb_dpc_comm_services .
-    INTERFACES /iwbep/if_sb_gen_dpc_injection .
+    INTERFACES /iwbep/if_sb_dpc_comm_services.
+    INTERFACES /iwbep/if_sb_gen_dpc_injection.
 
     METHODS /iwbep/if_mgw_appl_srv_runtime~get_entityset REDEFINITION.
     METHODS /iwbep/if_mgw_appl_srv_runtime~get_entity REDEFINITION.
@@ -17,18 +17,19 @@ CLASS zcl_zsegw_dpc DEFINITION PUBLIC INHERITING FROM /iwbep/cl_mgw_push_abs_dat
 
     METHODS zsegwset_create_entity
       IMPORTING
-      !iv_entity_name TYPE string
-      !iv_entity_set_name TYPE string
-      !iv_source_name TYPE string
-      !it_key_tab TYPE /iwbep/t_mgw_name_value_pair
-      !io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_c OPTIONAL
-      !it_navigation_path TYPE /iwbep/t_mgw_navigation_path
-      !io_data_provider TYPE REF TO /iwbep/if_mgw_entry_provider OPTIONAL
+        iv_entity_name     TYPE string
+        iv_entity_set_name TYPE string
+        iv_source_name     TYPE string
+        it_key_tab         TYPE /iwbep/t_mgw_name_value_pair
+        io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_c OPTIONAL
+        it_navigation_path TYPE /iwbep/t_mgw_navigation_path
+        io_data_provider   TYPE REF TO /iwbep/if_mgw_entry_provider OPTIONAL
       EXPORTING
-      !er_entity TYPE zcl_zsegw_mpc=>ts_zsegw
+        er_entity TYPE zcl_zsegw_mpc=>ts_zsegw
       RAISING
-      /iwbep/cx_mgw_busi_exception
-      /iwbep/cx_mgw_tech_exception .
+        /iwbep/cx_mgw_busi_exception
+        /iwbep/cx_mgw_tech_exception.
+
     METHODS zsegwset_delete_entity
       IMPORTING
       !iv_entity_name TYPE string

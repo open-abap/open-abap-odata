@@ -1,4 +1,4 @@
-INTERFACE /iwbep/if_mgw_req_entity PUBLIC.
+INTERFACE /iwbep/if_mgw_req_entity_c PUBLIC.
 
   METHODS get_entity_set_name
     RETURNING

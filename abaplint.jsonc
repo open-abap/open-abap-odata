@@ -458,12 +458,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "no_public_attributes": {
-      "exclude": [],
-      "severity": "Error",
-      "allowReadOnly": false,
-      "ignoreTestClasses": false
-    },
+    "no_public_attributes": false,
     "no_yoda_conditions": {
       "exclude": [],
       "severity": "Error",
