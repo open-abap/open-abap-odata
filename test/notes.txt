@@ -1,0 +1,20 @@
+url: http://localhost:8080/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet?$format=json
+method: GET
+
+expected:
+
+{
+  "d" : {
+    "results" : [
+      {
+        "__metadata" : {
+          "id" : "http://localhost:8080/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet('HELLO')",
+          "uri" : "http://localhost:8080/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet('HELLO')",
+          "type" : "ZSEGW_SRV.zsegw"
+        },
+        "Something1" : "HELLO",
+        "Something2" : "WORLD"
+      }
+    ]
+  }
+}

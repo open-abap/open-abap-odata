@@ -210,10 +210,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "description_empty": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "description_empty": false,
     "double_space": {
       "exclude": [],
       "severity": "Error",
@@ -376,14 +373,9 @@
       "severity": "Error",
       "count": 1
     },
-    "line_break_style": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "line_break_style": false,
     "line_length": {
-      "exclude": [],
-      "severity": "Error",
-      "length": 120
+      "length": 140
     },
     "line_only_punc": {
       "exclude": [],
@@ -404,16 +396,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "local_variable_names": {
-      "exclude": [],
-      "severity": "Error",
-      "patternKind": "required",
-      "ignoreNames": [],
-      "ignorePatterns": [],
-      "expectedData": "^L._.+$",
-      "expectedConstant": "^LC_.+$",
-      "expectedFS": "^<L._.+>$"
-    },
+    "local_variable_names": false,
     "main_file_contents": {
       "exclude": [],
       "severity": "Error"
@@ -520,45 +503,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "object_naming": {
-      "exclude": [],
-      "severity": "Error",
-      "patternKind": "required",
-      "ignoreNames": [],
-      "ignorePatterns": [],
-      "clas": "^ZC(L|X)",
-      "intf": "^ZIF",
-      "prog": "^Z",
-      "fugr": "^Z",
-      "tabl": "^Z",
-      "ttyp": "^Z",
-      "dtel": "^Z",
-      "doma": "^Z",
-      "msag": "^Z",
-      "tran": "^Z",
-      "enqu": "^EZ",
-      "auth": "^Z",
-      "pinf": "^Z",
-      "idoc": "^Z",
-      "xslt": "^Z",
-      "ssfo": "^Z",
-      "ssst": "^Z",
-      "shlp": "^Z",
-      "sxci": "^Z",
-      "enhs": "^Z",
-      "enho": "^Z",
-      "cmod": "^Z",
-      "form": "^Z",
-      "sfpf": "^Z",
-      "sfpi": "^Z",
-      "aqqu": "^Z",
-      "aqsg": "^Z",
-      "aqbg": "^Z",
-      "suso": "^Z",
-      "sucu": "^Z",
-      "wdya": "^Z",
-      "wdyn": "^Z"
-    },
+    "object_naming": false,
     "obsolete_statement": {
       "exclude": [],
       "severity": "Error",
@@ -615,53 +560,16 @@
       "exclude": [],
       "severity": "Error"
     },
-    "pragma_style": {
-      "exclude": [],
-      "severity": "Error",
-      "style": "upper"
-    },
-    "prefer_corresponding": {
-      "exclude": [],
-      "severity": "Error"
-    },
-    "prefer_inline": {
-      "exclude": [],
-      "severity": "Error"
-    },
-    "prefer_is_not": {
-      "exclude": [],
-      "severity": "Error"
-    },
-    "prefer_pragmas": {
-      "exclude": [],
-      "severity": "Error",
-      "check": [
-        {
-          "pseudo": "#EC CI_SUBRC",
-          "pragma": "SUBRC_OK"
-        },
-        {
-          "pseudo": "#EC NEEDED",
-          "pragma": "NEEDED"
-        },
-        {
-          "pseudo": "#EC NOTEXT",
-          "pragma": "NO_TEXT"
-        },
-        {
-          "pseudo": "#EC NO_HANDLER",
-          "pragma": "NO_HANDLER"
-        }
-      ]
-    },
+    "pragma_style": true,
+    "prefer_corresponding": true,
+    "prefer_inline": true,
+    "prefer_is_not": true,
+    "prefer_pragmas": false,
     "prefer_raise_exception_new": {
       "exclude": [],
       "severity": "Error"
     },
-    "prefer_returning_to_exporting": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "prefer_returning_to_exporting": false,
     "prefer_xsdbool": {
       "exclude": [],
       "severity": "Error"
@@ -699,8 +607,7 @@
       "ignoreWorkflow": true
     },
     "rfc_error_handling": {
-      "exclude": [],
-      "severity": "Error"
+      "exclude": ["dpc.clas.abap"]
     },
     "select_add_order_by": {
       "exclude": [],
@@ -799,19 +706,9 @@
       "exclude": [],
       "severity": "Error"
     },
-    "try_without_catch": {
-      "exclude": [],
-      "severity": "Error"
-    },
-    "type_form_parameters": {
-      "exclude": [],
-      "severity": "Error"
-    },
-    "types_naming": {
-      "exclude": [],
-      "severity": "Error",
-      "pattern": "^TY_.+$"
-    },
+    "try_without_catch": true,
+    "type_form_parameters": true,
+    "types_naming": false,
     "uncaught_exception": {
       "exclude": [],
       "severity": "Error",
@@ -831,10 +728,7 @@
       "severity": "Error",
       "allowNoTextGlobal": false
     },
-    "unnecessary_return": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "unnecessary_return": false,
     "unreachable_code": {
       "exclude": [],
       "severity": "Error"

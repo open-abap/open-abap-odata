@@ -1,0 +1,22 @@
+CLASS zcl_zsegw_dpc_ext DEFINITION PUBLIC INHERITING FROM zcl_zsegw_dpc CREATE PUBLIC.
+
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+
+    METHODS zsegwset_get_entityset REDEFINITION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_zsegw_dpc_ext IMPLEMENTATION.
+
+
+  METHOD zsegwset_get_entityset.
+
+    SELECT * FROM zsegw
+      INTO CORRESPONDING FIELDS OF TABLE et_entityset
+      ORDER BY PRIMARY KEY ##SUBRC_OK.
+
+  ENDMETHOD.
+ENDCLASS.
