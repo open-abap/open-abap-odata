@@ -1,2 +1,3 @@
 # open-abap-odata
-odata basics
+
+OData shims for Node.js and Steampunk
