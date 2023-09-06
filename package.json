@@ -1,0 +1,14 @@
+{
+  "name": "open-abap-odata",
+  "private": true,
+  "version": "1.0.0",
+  "description": "OData shims for Node.js and Steampunk",
+  "scripts": {
+    "test": "abaplint"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@abaplint/cli": "^2.102.34"
+  }
+}
