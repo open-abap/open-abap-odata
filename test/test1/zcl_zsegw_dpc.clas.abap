@@ -477,16 +477,16 @@ CLASS zcl_zsegw_dpc IMPLEMENTATION.
   METHOD check_subscription_authority.
     RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
       EXPORTING
-      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'CHECK_SUBSCRIPTION_AUTHORITY'.
+        textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
+        method = 'CHECK_SUBSCRIPTION_AUTHORITY'.
   ENDMETHOD.
 
 
   METHOD zsegwset_create_entity.
     RAISE EXCEPTION TYPE /iwbep/cx_mgw_not_impl_exc
       EXPORTING
-      textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
-      method = 'ZSEGWSET_CREATE_ENTITY'.
+        textid = /iwbep/cx_mgw_not_impl_exc=>method_not_implemented
+        method = 'ZSEGWSET_CREATE_ENTITY'.
   ENDMETHOD.
 
 

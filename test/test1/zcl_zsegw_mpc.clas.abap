@@ -74,7 +74,7 @@ CLASS zcl_zsegw_mpc IMPLEMENTATION.
                                               iv_text_element_container = gc_incl_name ).  "#EC NOTEXT
     lo_property->set_is_key( ).
     lo_property->set_type_edm_string( ).
-    lo_property->set_maxlength( iv_max_length = 10 ). "#EC NOTEXT
+    lo_property->set_maxlength( 10 ).
     lo_property->set_creatable( abap_false ).
     lo_property->set_updatable( abap_false ).
     lo_property->set_sortable( abap_false ).
@@ -88,7 +88,7 @@ CLASS zcl_zsegw_mpc IMPLEMENTATION.
     lo_property->set_label_from_text_element( iv_text_element_symbol    = '002'
                                               iv_text_element_container = gc_incl_name ).  "#EC NOTEXT
     lo_property->set_type_edm_string( ).
-    lo_property->set_maxlength( iv_max_length = 10 ). "#EC NOTEXT
+    lo_property->set_maxlength( 10 ).
     lo_property->set_creatable( abap_false ).
     lo_property->set_updatable( abap_false ).
     lo_property->set_sortable( abap_false ).
@@ -98,8 +98,9 @@ CLASS zcl_zsegw_mpc IMPLEMENTATION.
         iv_key   = 'unicode'
         iv_value = 'false' ).
 
-    lo_entity_type->bind_structure( iv_structure_name = 'ZSEGW'
-                                iv_bind_conversions   = 'X' ). "#EC NOTEXT
+    lo_entity_type->bind_structure(
+      iv_structure_name   = 'ZSEGW'
+      iv_bind_conversions = 'X' ). "#EC NOTEXT
 
 
 ***********************************************************************************************************************************

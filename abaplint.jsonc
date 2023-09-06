@@ -461,10 +461,7 @@
       "count": 3,
       "logic": "less"
     },
-    "no_aliases": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "no_aliases": false,
     "no_chained_assignment": {
       "exclude": [],
       "severity": "Error"
@@ -730,10 +727,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "unused_methods": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "unused_methods": false,
     "unused_types": {
       "exclude": [],
       "severity": "Error",
