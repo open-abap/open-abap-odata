@@ -4,19 +4,44 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     INTERFACES /iwbep/if_mgw_core_srv_runtime.
     INTERFACES /iwbep/if_mgw_conv_srv_runtime.
     INTERFACES /iwbep/if_mgw_appl_srv_runtime.
+
   PROTECTED SECTION.
     DATA mo_context TYPE REF TO /iwbep/if_mgw_context.
+
     METHODS check_subscription_authority
       IMPORTING
-        is_subscription_data TYPE /iwbep/s_mgw_db_sub_data
+        is_subscription_data TYPE any
       RAISING
         /iwbep/cx_mgw_busi_exception
         /iwbep/cx_mgw_tech_exception.
-  PRIVATE SECTION.
 
 ENDCLASS.
 
 CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
+
+  METHOD /iwbep/if_mgw_conv_srv_runtime~get_logger.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~create_entity.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~delete_entity.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~get_entity.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~get_entityset.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~update_entity.
+    RETURN.
+  ENDMETHOD.
 
   METHOD check_subscription_authority.
     RETURN.

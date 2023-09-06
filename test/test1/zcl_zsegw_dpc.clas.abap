@@ -414,7 +414,7 @@ CLASS zcl_zsegw_dpc IMPLEMENTATION.
   METHOD /iwbep/if_sb_dpc_comm_services~log_message.
 * Log message in the application log
     DATA lo_logger TYPE REF TO /iwbep/cl_cos_logger.
-    DATA lv_text TYPE /iwbep/sup_msg_longtext.
+    DATA lv_text   TYPE /iwbep/sup_msg_longtext.
 
     MESSAGE ID iv_msg_id TYPE iv_msg_type NUMBER iv_msg_number
       WITH iv_msg_v1 iv_msg_v2 iv_msg_v3 iv_msg_v4 INTO lv_text.

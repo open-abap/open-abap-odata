@@ -1,7 +1,7 @@
 INTERFACE /iwbep/if_mgw_appl_srv_runtime PUBLIC.
 
   TYPES ty_s_mgw_response_entity_cntxt TYPE string.
-  TYPES ty_s_mgw_response_context TYPE string.
+  TYPES ty_s_mgw_response_context      TYPE string.
 
   METHODS get_stream
     IMPORTING
@@ -37,5 +37,82 @@ INTERFACE /iwbep/if_mgw_appl_srv_runtime PUBLIC.
       io_tech_request_context TYPE string
     EXPORTING
       er_deep_entitity        TYPE string.
+
+  METHODS create_entity
+    IMPORTING
+      iv_entity_name          TYPE string OPTIONAL
+      iv_entity_set_name      TYPE string OPTIONAL
+      iv_source_name          TYPE string OPTIONAL
+      io_data_provider        TYPE REF TO /iwbep/if_mgw_entry_provider
+      it_key_tab              TYPE /iwbep/t_mgw_name_value_pair OPTIONAL
+      it_navigation_path      TYPE /iwbep/t_mgw_navigation_path OPTIONAL
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_c OPTIONAL
+    EXPORTING
+      er_entity               TYPE REF TO data
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
+  METHODS delete_entity
+    IMPORTING
+      iv_entity_name          TYPE string OPTIONAL
+      iv_entity_set_name      TYPE string OPTIONAL
+      iv_source_name          TYPE string OPTIONAL
+      it_key_tab              TYPE /iwbep/t_mgw_name_value_pair OPTIONAL
+      it_navigation_path      TYPE /iwbep/t_mgw_navigation_path OPTIONAL
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_d OPTIONAL
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
+  METHODS get_entity
+    IMPORTING
+      iv_entity_name          TYPE string OPTIONAL
+      iv_entity_set_name      TYPE string OPTIONAL
+      iv_source_name          TYPE string OPTIONAL
+      it_key_tab              TYPE /iwbep/t_mgw_name_value_pair OPTIONAL
+      it_navigation_path      TYPE /iwbep/t_mgw_navigation_path OPTIONAL
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity OPTIONAL
+    EXPORTING
+      er_entity               TYPE REF TO data
+      es_response_context     TYPE ty_s_mgw_response_entity_cntxt
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
+  METHODS get_entityset
+    IMPORTING
+      iv_entity_name           TYPE string OPTIONAL
+      iv_entity_set_name       TYPE string OPTIONAL
+      iv_source_name           TYPE string OPTIONAL
+      it_filter_select_options TYPE /iwbep/t_mgw_select_option OPTIONAL
+      it_order                 TYPE /iwbep/t_mgw_sorting_order OPTIONAL
+      is_paging                TYPE /iwbep/s_mgw_paging OPTIONAL
+      it_navigation_path       TYPE /iwbep/t_mgw_navigation_path OPTIONAL
+      it_key_tab               TYPE /iwbep/t_mgw_name_value_pair OPTIONAL
+      iv_filter_string         TYPE string OPTIONAL
+      iv_search_string         TYPE string OPTIONAL
+      io_tech_request_context  TYPE REF TO /iwbep/if_mgw_req_entityset OPTIONAL
+    EXPORTING
+      er_entityset             TYPE REF TO data
+      es_response_context      TYPE ty_s_mgw_response_context
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
+  METHODS update_entity
+    IMPORTING
+      iv_entity_name          TYPE string OPTIONAL
+      iv_entity_set_name      TYPE string OPTIONAL
+      iv_source_name          TYPE string OPTIONAL
+      io_data_provider        TYPE REF TO /iwbep/if_mgw_entry_provider
+      it_key_tab              TYPE /iwbep/t_mgw_name_value_pair OPTIONAL
+      it_navigation_path      TYPE /iwbep/t_mgw_navigation_path OPTIONAL
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_u OPTIONAL
+    EXPORTING
+      er_entity               TYPE REF TO data
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
 
 ENDINTERFACE.

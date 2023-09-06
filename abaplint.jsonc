@@ -130,19 +130,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "class_attribute_names": {
-      "exclude": [],
-      "severity": "Error",
-      "patternKind": "required",
-      "ignoreNames": [],
-      "ignorePatterns": [],
-      "ignoreExceptions": true,
-      "ignoreLocal": true,
-      "ignoreInterfaces": false,
-      "statics": "^G._.+$",
-      "instance": "^M._.+$",
-      "constants": ""
-    },
+    "class_attribute_names": false,
     "classic_exceptions_overlap": {
       "exclude": [],
       "severity": "Error"
@@ -346,11 +334,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "intf_referencing_clas": {
-      "exclude": [],
-      "severity": "Error",
-      "allow": []
-    },
+    "intf_referencing_clas": false,
     "keep_single_parameter_on_one_line": {
       "exclude": [],
       "severity": "Error",
@@ -723,21 +707,10 @@
       "exclude": [],
       "severity": "Error"
     },
-    "unused_ddic": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "unused_ddic": false,
     "unused_methods": false,
-    "unused_types": {
-      "exclude": [],
-      "severity": "Error",
-      "skipNames": []
-    },
-    "unused_variables": {
-      "exclude": [],
-      "severity": "Error",
-      "skipNames": []
-    },
+    "unused_types": false,
+    "unused_variables": false,
     "use_bool_expression": {
       "exclude": [],
       "severity": "Error"

@@ -2,7 +2,7 @@ INTERFACE /iwbep/if_sb_dpc_comm_services PUBLIC.
 
   METHODS commit_work
     IMPORTING
-      iv_rfc_dest TYPE /iwbep/defi_rfc_dest OPTIONAL
+      iv_rfc_dest TYPE any OPTIONAL
     RAISING
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
@@ -24,7 +24,7 @@ INTERFACE /iwbep/if_sb_dpc_comm_services PUBLIC.
   METHODS rfc_exception_handling
     IMPORTING
       iv_subrc            TYPE sy-subrc
-      iv_exp_message_text TYPE /iwbep/mgw_bop_rfc_excep_text
+      iv_exp_message_text TYPE any
     RAISING
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
@@ -34,7 +34,7 @@ INTERFACE /iwbep/if_sb_dpc_comm_services PUBLIC.
       is_return      TYPE any OPTIONAL
       it_return      TYPE ANY TABLE OPTIONAL
       iv_entity_type TYPE string OPTIONAL
-      it_key_tab     TYPE /iwbep/t_mgw_name_value_pair OPTIONAL
+      it_key_tab     TYPE any OPTIONAL
     RAISING
       /iwbep/cx_mgw_busi_exception.
 
