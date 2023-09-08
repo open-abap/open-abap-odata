@@ -20,7 +20,7 @@ export function startServer(quiet) {
 
 // ------------------
 
-  app.all("/ztestabap*", async function (req, res) {
+  app.all("/sap/opu/odata/sap/*", async function (req, res) {
     await cl_express_icf_shim.run({
       req,
       res,
