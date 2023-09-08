@@ -3,11 +3,7 @@ CLASS zcl_entity_typ DEFINITION PUBLIC.
     INTERFACES /iwbep/if_mgw_odata_entity_typ.
 
   PRIVATE SECTION.
-    TYPES: BEGIN OF ty_property,
-             name     TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
-             property TYPE REF TO /iwbep/if_mgw_odata_property,
-           END OF ty_property.
-    DATA mt_properties TYPE HASHED TABLE OF ty_property WITH UNIQUE KEY name.
+    DATA mt_properties TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
 ENDCLASS.
 
 CLASS zcl_entity_typ IMPLEMENTATION.
@@ -36,7 +32,7 @@ CLASS zcl_entity_typ IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~get_properties.
-    ASSERT 1 = 'todo'.
+    rt_properties = mt_properties.
   ENDMETHOD.
 
 ENDCLASS.

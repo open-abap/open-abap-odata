@@ -29,13 +29,19 @@ CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD metadata.
-    CONSTANTS lc_host TYPE string VALUE 'http://localhost:8080'.
-    DATA mpc TYPE REF TO zcl_zsegw_mpc_ext.
-    DATA lv_namespace TYPE string.
+    CONSTANTS lc_host    TYPE string VALUE 'http://localhost:8080'.
+    DATA mpc             TYPE REF TO zcl_zsegw_mpc_ext.
+    DATA lv_namespace    TYPE string.
+    DATA lt_entity_types TYPE STANDARD TABLE OF /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name WITH DEFAULT KEY.
+    DATA lv_entity_type  LIKE LINE OF lt_entity_types.
+    DATA lo_entity       TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lt_properties   TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
+    DATA ls_property     LIKE LINE OF lt_properties.
+
+    INSERT zcl_zsegw_mpc_ext=>gc_zsegw INTO TABLE lt_entity_types.
 
     CREATE OBJECT mpc.
     mpc->define( ).
-    mpc->model->get_entity_type( zcl_zsegw_mpc_ext=>gc_zsegw ).
     mpc->model->get_schema_namespace( IMPORTING ev_namespace = lv_namespace ).
 
     rv_xml =
@@ -43,15 +49,23 @@ CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
       |<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">\n| &&
       |  <edmx:DataServices m:DataServiceVersion="2.0">\n| &&
       |    <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="{ lv_namespace }" xml:lang="en" sap:schema-version="1">\n| &&
-      |      <Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>\n| &&
-      |      <EntityType Name="zsegw" sap:content-version="1">\n| &&
-      |        <Key>\n| &&
-      |          <PropertyRef Name="Something1"/>\n| &&
-      |        </Key>\n| &&
-      |        <Property Name="Something1" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="SOMETHING1" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>\n| &&
-      |        <Property Name="Something2" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="SOMETHING2" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>\n| &&
-      |      </EntityType>\n| &&
-      |      <EntityContainer Name="{ lv_namespace }_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">\n| &&
+      |      <Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>\n|.
+    LOOP AT lt_entity_types INTO lv_entity_type.
+      lo_entity = mpc->model->get_entity_type( lv_entity_type ).
+      rv_xml = rv_xml &&
+        |      <EntityType Name="{ lv_entity_type }" sap:content-version="1">\n| &&
+        |        <Key>\n| &&
+        |          <PropertyRef Name="Something1"/>\n| &&
+        |        </Key>\n|.
+      lt_properties = lo_entity->get_properties( ).
+      LOOP AT lt_properties INTO ls_property.
+        rv_xml = rv_xml &&
+          |        <Property Name="{ ls_property-name }" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="SOMETHING1" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>\n|.
+      ENDLOOP.
+      rv_xml = rv_xml && |      </EntityType>\n|.
+    ENDLOOP.
+    rv_xml = rv_xml &&
+      |      <EntityContainer Name="{ lv_namespace }_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="json">\n| &&
       |        <EntitySet Name="zsegwSet" EntityType="{ lv_namespace }.zsegw" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>\n| &&
       |      </EntityContainer>\n| &&
       |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="{ lc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&
