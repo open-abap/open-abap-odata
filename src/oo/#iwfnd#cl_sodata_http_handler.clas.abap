@@ -5,6 +5,9 @@ CLASS /iwfnd/cl_sodata_http_handler DEFINITION PUBLIC.
     METHODS metadata
       RETURNING VALUE(rv_xml) TYPE string
       RAISING /iwbep/cx_mgw_med_exception.
+    METHODS map_boolean
+      IMPORTING iv_boolean TYPE abap_bool
+      RETURNING VALUE(rv_string) TYPE string.
 ENDCLASS.
 
 CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
@@ -28,8 +31,20 @@ CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD map_boolean.
+    CASE iv_boolean.
+      WHEN abap_true.
+        rv_string = 'true'.
+      WHEN abap_false.
+        rv_string = 'false'.
+      WHEN OTHERS.
+        ASSERT 1 = 2.
+    ENDCASE.
+  ENDMETHOD.
+
   METHOD metadata.
     CONSTANTS lc_host    TYPE string VALUE 'http://localhost:8080'.
+
     DATA mpc             TYPE REF TO zcl_zsegw_mpc_ext.
     DATA lv_namespace    TYPE string.
     DATA lt_entity_types TYPE STANDARD TABLE OF /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name WITH DEFAULT KEY.
@@ -37,6 +52,7 @@ CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
     DATA lo_entity       TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
     DATA lt_properties   TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
     DATA ls_property     LIKE LINE OF lt_properties.
+    DATA lo_property     TYPE REF TO zcl_property.
 
     INSERT zcl_zsegw_mpc_ext=>gc_zsegw INTO TABLE lt_entity_types.
 
@@ -59,8 +75,12 @@ CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
         |        </Key>\n|.
       lt_properties = lo_entity->get_properties( ).
       LOOP AT lt_properties INTO ls_property.
+        lo_property ?= ls_property-property.
         rv_xml = rv_xml &&
-          |        <Property Name="{ ls_property-name }" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="SOMETHING1" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>\n|.
+          |        <Property Name="{ ls_property-name }" Type="{
+            lo_property->mv_edm_type }" Nullable="{
+            map_boolean( lo_property->mv_nullable ) }" MaxLength="{
+            lo_property->mv_maxlength }" sap:unicode="false" sap:label="todo" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>\n|.
       ENDLOOP.
       rv_xml = rv_xml && |      </EntityType>\n|.
     ENDLOOP.

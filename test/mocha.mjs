@@ -30,8 +30,8 @@ describe('Integration Test', async () => {
         <Key>
           <PropertyRef Name="Something1"/>
         </Key>
-        <Property Name="Something1" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="SOMETHING1" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-        <Property Name="Something2" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="SOMETHING2" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+        <Property Name="Something1" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="todo" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+        <Property Name="Something2" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="todo" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
       </EntityType>
       <EntityContainer Name="ZSEGW_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="json">
         <EntitySet Name="zsegwSet" EntityType="ZSEGW_SRV.zsegw" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>

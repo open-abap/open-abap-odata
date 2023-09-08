@@ -2,7 +2,6 @@ CLASS zcl_property DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_property.
 
-  PRIVATE SECTION.
     DATA mv_is_key     TYPE abap_bool.
     DATA mv_filterable TYPE abap_bool.
     DATA mv_nullable   TYPE abap_bool.
