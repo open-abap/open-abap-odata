@@ -8,11 +8,11 @@ CLASS zcl_zsegw_mpc DEFINITION
     TYPES ts_zsegw TYPE zsegw.
     TYPES tt_zsegw TYPE STANDARD TABLE OF ts_zsegw.
     TYPES: BEGIN OF ts_text_element,
-            artifact_name  TYPE c LENGTH 40,
-            artifact_type  TYPE c LENGTH 4,
+            artifact_name        TYPE c LENGTH 40,
+            artifact_type        TYPE c LENGTH 4,
             parent_artifact_name TYPE c LENGTH 40,
             parent_artifact_type TYPE c LENGTH 4,
-            text_symbol    TYPE textpoolky,
+            text_symbol          TYPE textpoolky,
           END OF ts_text_element .
     TYPES tt_text_elements TYPE STANDARD TABLE OF ts_text_element WITH KEY text_symbol.
 

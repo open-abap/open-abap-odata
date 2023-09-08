@@ -27,8 +27,9 @@ CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
   METHOD metadata.
     DATA mpc TYPE REF TO zcl_zsegw_mpc_ext.
     CREATE OBJECT mpc.
-
+* todo,
     mpc->define( ).
+    mpc->model->get_entity_type( zcl_zsegw_mpc_ext=>gc_zsegw ).
   ENDMETHOD.
 
 ENDCLASS.
