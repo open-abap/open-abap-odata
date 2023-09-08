@@ -13,7 +13,7 @@ CLASS zcl_zsegw_dpc DEFINITION PUBLIC INHERITING FROM /iwbep/cl_mgw_push_abs_dat
 
   PROTECTED SECTION.
 
-    DATA mo_injection TYPE REF TO /iwbep/if_sb_gen_dpc_injection .
+    DATA mo_injection TYPE REF TO /iwbep/if_sb_gen_dpc_injection.
 
     METHODS zsegwset_create_entity
       IMPORTING
@@ -40,7 +40,7 @@ CLASS zcl_zsegw_dpc DEFINITION PUBLIC INHERITING FROM /iwbep/cl_mgw_push_abs_dat
       !it_navigation_path TYPE /iwbep/t_mgw_navigation_path
       RAISING
       /iwbep/cx_mgw_busi_exception
-      /iwbep/cx_mgw_tech_exception .
+      /iwbep/cx_mgw_tech_exception.
     METHODS zsegwset_get_entity
       IMPORTING
       !iv_entity_name TYPE string
@@ -55,7 +55,7 @@ CLASS zcl_zsegw_dpc DEFINITION PUBLIC INHERITING FROM /iwbep/cl_mgw_push_abs_dat
       !es_response_context TYPE /iwbep/if_mgw_appl_srv_runtime=>ty_s_mgw_response_entity_cntxt
       RAISING
       /iwbep/cx_mgw_busi_exception
-      /iwbep/cx_mgw_tech_exception .
+      /iwbep/cx_mgw_tech_exception.
     METHODS zsegwset_get_entityset
       IMPORTING
       !iv_entity_name TYPE string
@@ -74,7 +74,7 @@ CLASS zcl_zsegw_dpc DEFINITION PUBLIC INHERITING FROM /iwbep/cl_mgw_push_abs_dat
       !es_response_context TYPE /iwbep/if_mgw_appl_srv_runtime=>ty_s_mgw_response_context
       RAISING
       /iwbep/cx_mgw_busi_exception
-      /iwbep/cx_mgw_tech_exception .
+      /iwbep/cx_mgw_tech_exception.
     METHODS zsegwset_update_entity
       IMPORTING
       !iv_entity_name TYPE string
@@ -88,10 +88,10 @@ CLASS zcl_zsegw_dpc DEFINITION PUBLIC INHERITING FROM /iwbep/cl_mgw_push_abs_dat
       !er_entity TYPE zcl_zsegw_mpc=>ts_zsegw
       RAISING
       /iwbep/cx_mgw_busi_exception
-      /iwbep/cx_mgw_tech_exception .
+      /iwbep/cx_mgw_tech_exception.
 
     METHODS check_subscription_authority
-      REDEFINITION .
+      REDEFINITION.
   PRIVATE SECTION.
 ENDCLASS.
 

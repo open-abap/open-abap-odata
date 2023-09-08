@@ -1,7 +1,7 @@
 CLASS zcl_zsegw_mpc DEFINITION
   PUBLIC
   INHERITING FROM /iwbep/cl_mgw_push_abs_model
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
 
@@ -13,7 +13,7 @@ CLASS zcl_zsegw_mpc DEFINITION
             parent_artifact_name TYPE c LENGTH 40,
             parent_artifact_type TYPE c LENGTH 4,
             text_symbol          TYPE textpoolky,
-          END OF ts_text_element .
+          END OF ts_text_element.
     TYPES tt_text_elements TYPE STANDARD TABLE OF ts_text_element WITH KEY text_symbol.
 
     CONSTANTS gc_zsegw TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name VALUE 'zsegw' ##NO_TEXT.
@@ -22,7 +22,7 @@ CLASS zcl_zsegw_mpc DEFINITION
       RETURNING
         VALUE(rt_text_elements) TYPE tt_text_elements
       RAISING
-        /iwbep/cx_mgw_med_exception .
+        /iwbep/cx_mgw_med_exception.
 
     METHODS define REDEFINITION.
     METHODS get_last_modified REDEFINITION.
@@ -33,7 +33,7 @@ CLASS zcl_zsegw_mpc DEFINITION
 
     METHODS define_zsegw
       RAISING
-      /iwbep/cx_mgw_med_exception .
+      /iwbep/cx_mgw_med_exception.
 ENDCLASS.
 
 

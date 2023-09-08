@@ -8,6 +8,10 @@ ENDCLASS.
 
 CLASS zcl_property IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_odata_item~set_label_from_text_element.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_property~set_type_edm_string.
     ASSERT 1 = 'todo'.
   ENDMETHOD.

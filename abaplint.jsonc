@@ -607,15 +607,10 @@
       "severity": "Error"
     },
     "space_before_dot": {
-      "exclude": [],
-      "severity": "Error",
-      "ignoreGlobalDefinition": true,
-      "ignoreExceptions": true
+      "ignoreGlobalDefinition": false,
+      "ignoreExceptions": false
     },
-    "sql_escape_host_variables": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "sql_escape_host_variables": true,
     "sql_value_conversion": {
       "exclude": [],
       "severity": "Error"
