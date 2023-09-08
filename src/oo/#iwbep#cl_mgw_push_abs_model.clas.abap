@@ -18,7 +18,7 @@ ENDCLASS.
 CLASS /iwbep/cl_mgw_push_abs_model IMPLEMENTATION.
 
   METHOD constructor.
-    CREATE OBJECT model TYPE zcl_mgw_odata_model.
+    CREATE OBJECT model TYPE zcl_model.
   ENDMETHOD.
 
   METHOD get_last_modified.
