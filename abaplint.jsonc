@@ -336,9 +336,7 @@
       "count": 1
     },
     "line_break_style": false,
-    "line_length": {
-      "length": 140
-    },
+    "line_length": false,
     "line_only_punc": {
       "exclude": [],
       "severity": "Error",
