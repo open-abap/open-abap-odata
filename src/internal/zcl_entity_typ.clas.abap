@@ -13,11 +13,12 @@ ENDCLASS.
 CLASS zcl_entity_typ IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~create_entity_set.
-    ASSERT 1 = 'todo'.
+    CREATE OBJECT ro_entity_set TYPE zcl_entity_set.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~bind_structure.
-    ASSERT 1 = 'todo'.
+* todo ???
+    RETURN.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~create_property.

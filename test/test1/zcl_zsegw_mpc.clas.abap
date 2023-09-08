@@ -81,8 +81,8 @@ CLASS zcl_zsegw_mpc IMPLEMENTATION.
     lo_property->set_nullable( abap_false ).
     lo_property->set_filterable( abap_false ).
     lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
-      iv_key     = 'unicode'
-        iv_value = 'false' ).
+      iv_key   = 'unicode'
+      iv_value = 'false' ).
     lo_property = lo_entity_type->create_property( iv_property_name  = 'Something2'
                                                    iv_abap_fieldname = 'SOMETHING2' ). "#EC NOTEXT
     lo_property->set_label_from_text_element( iv_text_element_symbol    = '002'

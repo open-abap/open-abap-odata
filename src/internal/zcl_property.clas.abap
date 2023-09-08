@@ -53,7 +53,7 @@ CLASS zcl_property IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_annotatabl~create_annotation.
-    ASSERT 1 = 'todo'.
+    CREATE OBJECT ro_annotation TYPE zcl_annotation.
   ENDMETHOD.
 
 ENDCLASS.
