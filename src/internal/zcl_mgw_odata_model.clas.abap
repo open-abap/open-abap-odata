@@ -3,16 +3,29 @@ CLASS zcl_mgw_odata_model DEFINITION PUBLIC.
     INTERFACES /iwbep/if_mgw_odata_model.
   PRIVATE SECTION.
     DATA mv_namespace TYPE string.
+
+    TYPES: BEGIN OF ty_entity,
+             entity_name TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
+             entity      TYPE REF TO /iwbep/if_mgw_odata_entity_typ,
+           END OF ty_entity.
+    DATA mt_entities TYPE HASHED TABLE OF ty_entity WITH UNIQUE KEY entity_name.
 ENDCLASS.
 
 CLASS zcl_mgw_odata_model IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_odata_model~create_entity_type.
     ASSERT 1 = 'todo'.
+
+    " CREATE OBJECT ro_entity
+    "   EXPORTING
+    "     iv_entity_name = iv_entity_type_name.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_model~get_entity_type.
-    ASSERT 1 = 'todo'.
+    FIELD-SYMBOLS <ls_entity> LIKE LINE OF mt_entities.
+    READ TABLE mt_entities ASSIGNING <ls_entity> WITH TABLE KEY entity_name = iv_entity_name.
+    ASSERT sy-subrc = 0.
+    ro_entity_type = <ls_entity>-entity.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_model~set_schema_namespace.
