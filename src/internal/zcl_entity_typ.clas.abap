@@ -20,4 +20,12 @@ CLASS zcl_entity_typ IMPLEMENTATION.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_odata_entity_typ~get_property.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_entity_typ~get_properties.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
 ENDCLASS.
