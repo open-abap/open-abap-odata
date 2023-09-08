@@ -1,12 +1,14 @@
 {
   "input_folder": "{src,tes}",
-  "input_filter": [],
   "output_folder": "output",
   "write_unit_tests": true,
   "write_source_map": true,
   "libs": [
     {
       "url": "https://github.com/open-abap/open-abap-core"
+    },
+    {
+      "url": "https://github.com/open-abap/express-icf-shim"
     }
   ],
   "options": {
