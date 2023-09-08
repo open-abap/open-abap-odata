@@ -80,7 +80,11 @@ CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
           |        <Property Name="{ ls_property-name }" Type="{
             lo_property->mv_edm_type }" Nullable="{
             map_boolean( lo_property->mv_nullable ) }" MaxLength="{
-            lo_property->mv_maxlength }" sap:unicode="false" sap:label="todo" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>\n|.
+            lo_property->mv_maxlength }" sap:unicode="false" sap:label="todo" sap:creatable="{
+            map_boolean( lo_property->mv_creatable ) }" sap:updatable="{
+            map_boolean( lo_property->mv_updatable ) }" sap:sortable="{
+            map_boolean( lo_property->mv_sortable ) }" sap:filterable="{
+            map_boolean( lo_property->mv_filterable ) }"/>\n|.
       ENDLOOP.
       rv_xml = rv_xml && |      </EntityType>\n|.
     ENDLOOP.
