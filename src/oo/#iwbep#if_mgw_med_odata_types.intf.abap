@@ -11,4 +11,9 @@ INTERFACE /iwbep/if_mgw_med_odata_types PUBLIC.
          END OF ty_s_mgw_odata_property.
   TYPES ty_t_mgw_odata_properties TYPE STANDARD TABLE OF ty_s_mgw_odata_property WITH DEFAULT KEY.
 
+  TYPES ty_e_med_edm_type TYPE c LENGTH 20.
+  CONSTANTS: BEGIN OF gcs_edm_data_types,
+               string TYPE ty_e_med_edm_type VALUE 'Edm.String',
+             END OF gcs_edm_data_types.
+
 ENDINTERFACE.
