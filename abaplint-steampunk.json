@@ -1,0 +1,62 @@
+{
+  "global": {
+    "files": "/steampunk/**/*.*"
+  },
+  "dependencies": [
+    {
+      "url": "https://github.com/abapedia/steampunk-2305-api",
+      "files": "/src/**/*.*"
+    }
+  ],
+  "syntax": {
+    "version": "Cloud",
+    "errorNamespace": "."
+  },
+  "rules": {
+    "begin_end_names": {
+      "severity": "Warning"
+    },
+    "cds_parser_error": {
+      "severity": "Warning"
+    },
+    "check_ddic": {
+      "severity": "Warning"
+    },
+    "strict_sql": {
+      "severity": "Warning"
+    },
+    "sql_escape_host_variables": {
+      "severity": "Warning"
+    },
+    "check_include": {
+      "severity": "Warning"
+    },
+    "check_syntax": {
+      "severity": "Warning"
+    },
+    "cloud_types": {
+      "severity": "Warning"
+    },
+    "global_class": {
+      "severity": "Warning"
+    },
+    "implement_methods": {
+      "severity": "Warning"
+    },
+    "method_implemented_twice": {
+      "severity": "Warning"
+    },
+    "parser_error": {
+      "severity": "Warning"
+    },
+    "superclass_final": {
+      "severity": "Warning"
+    },
+    "unknown_types": {
+      "severity": "Warning"
+    },
+    "xml_consistency": {
+      "severity": "Warning"
+    }
+  }
+}

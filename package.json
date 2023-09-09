@@ -6,6 +6,10 @@
   "scripts": {
     "lint": "abaplint",
     "unit": "rm -rf output && abap_transpile && echo RUNNING && node --expose-gc output/index.mjs && echo OK",
+    "steampunk:files": "rm -rf steampunk && mkdir steampunk && cp -r src/* steampunk && cp test/test1/*.clas* steampunk && rm steampunk/oo/*cl_sodata_http_handler.clas.abap",
+    "steampunk:rename": "abaplint abaplint-steampunk.json --rename",
+    "steampunk:lint": "abaplint abaplint-steampunk.json",
+    "steampunk": "npm run steampunk:files && steampunk:rename && steampunk:lint",
     "test": "npm run lint && npm run unit && mocha test/mocha.mjs"
   },
   "author": "",
