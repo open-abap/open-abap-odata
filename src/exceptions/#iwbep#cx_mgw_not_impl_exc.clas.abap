@@ -2,7 +2,7 @@ CLASS /iwbep/cx_mgw_not_impl_exc DEFINITION INHERITING FROM /iwbep/cx_mgw_tech_e
   PUBLIC SECTION.
     METHODS constructor
       IMPORTING
-        textid   LIKE if_t100_message=>t100key OPTIONAL
+        textid   LIKE textid OPTIONAL
         previous LIKE previous OPTIONAL
         method   TYPE string OPTIONAL.
 ENDCLASS.
