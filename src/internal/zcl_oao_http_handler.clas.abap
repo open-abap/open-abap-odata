@@ -69,8 +69,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     CREATE OBJECT lo_dpc.
 
 * todo,
-    lo_dpc->zsegwset_get_entityset(
-      iv_entity_name           = ''
+    lo_dpc->/iwbep/if_mgw_appl_srv_runtime~get_entityset(
+      iv_entity_name           = 'zsegwSet'
       iv_entity_set_name       = ''
       iv_source_name           = ''
       it_filter_select_options = lt_filter_option
