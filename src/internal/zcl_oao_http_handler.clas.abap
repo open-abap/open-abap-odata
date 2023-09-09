@@ -65,12 +65,14 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lt_key_tab         TYPE /iwbep/t_mgw_name_value_pair.
     DATA lt_navigation_path TYPE /iwbep/t_mgw_navigation_path.
     DATA lt_order           TYPE /iwbep/t_mgw_sorting_order.
+    DATA lo_request_context TYPE REF TO /iwbep/if_mgw_req_entityset.
 
     CREATE OBJECT lo_dpc.
+    CREATE OBJECT lo_request_context TYPE zcl_oao_request_context.
 
 * todo,
-    lo_dpc->zsegwset_get_entityset(
-      iv_entity_name           = ''
+    lo_dpc->/iwbep/if_mgw_appl_srv_runtime~get_entityset(
+      iv_entity_name           = 'zsegwSet'
       iv_entity_set_name       = ''
       iv_source_name           = ''
       it_filter_select_options = lt_filter_option
@@ -79,7 +81,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       it_navigation_path       = lt_navigation_path
       it_order                 = lt_order
       iv_filter_string         = ''
-      iv_search_string         = '' ).
+      iv_search_string         = ''
+      io_tech_request_context  = lo_request_context ).
 
 * todo
     rv_json = `{` && |\n| &&
