@@ -1,4 +1,4 @@
-CLASS zcl_property DEFINITION PUBLIC.
+CLASS zcl_oao_property DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_property.
 
@@ -12,7 +12,7 @@ CLASS zcl_property DEFINITION PUBLIC.
     DATA mv_edm_type   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_edm_type.
 ENDCLASS.
 
-CLASS zcl_property IMPLEMENTATION.
+CLASS zcl_oao_property IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_odata_item~set_label_from_text_element.
 * todo??
@@ -52,7 +52,7 @@ CLASS zcl_property IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_annotatabl~create_annotation.
-    CREATE OBJECT ro_annotation TYPE zcl_annotation.
+    CREATE OBJECT ro_annotation TYPE zcl_oao_annotation.
   ENDMETHOD.
 
 ENDCLASS.

@@ -1,4 +1,4 @@
-CLASS zcl_http_handler DEFINITION PUBLIC.
+CLASS zcl_oao_http_handler DEFINITION PUBLIC.
   PUBLIC SECTION.
     TYPES: BEGIN OF ty_data,
              content_type TYPE string,
@@ -31,7 +31,7 @@ CLASS zcl_http_handler DEFINITION PUBLIC.
       RETURNING VALUE(rv_string) TYPE string.
 ENDCLASS.
 
-CLASS zcl_http_handler IMPLEMENTATION.
+CLASS zcl_oao_http_handler IMPLEMENTATION.
 
   METHOD handle.
 
@@ -109,7 +109,7 @@ CLASS zcl_http_handler IMPLEMENTATION.
     DATA lo_entity       TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
     DATA lt_properties   TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
     DATA ls_property     LIKE LINE OF lt_properties.
-    DATA lo_property     TYPE REF TO zcl_property.
+    DATA lo_property     TYPE REF TO zcl_oao_property.
 
     INSERT zcl_zsegw_mpc_ext=>gc_zsegw INTO TABLE lt_entity_types.
 

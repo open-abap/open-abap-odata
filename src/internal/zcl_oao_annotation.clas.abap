@@ -1,4 +1,4 @@
-CLASS zcl_annotation DEFINITION PUBLIC.
+CLASS zcl_oao_annotation DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_annotation.
 
@@ -10,7 +10,7 @@ CLASS zcl_annotation DEFINITION PUBLIC.
     DATA mt_annotations TYPE HASHED TABLE OF ty_annotation WITH UNIQUE KEY key.
 ENDCLASS.
 
-CLASS zcl_annotation IMPLEMENTATION.
+CLASS zcl_oao_annotation IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_odata_annotation~add.
     DATA ls_row LIKE LINE OF mt_annotations.

@@ -1,4 +1,4 @@
-CLASS zcl_entity_set DEFINITION PUBLIC.
+CLASS zcl_oao_entity_set DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_entity_set.
 
@@ -13,7 +13,7 @@ CLASS zcl_entity_set DEFINITION PUBLIC.
     DATA mv_filter_required TYPE abap_bool.
 ENDCLASS.
 
-CLASS zcl_entity_set IMPLEMENTATION.
+CLASS zcl_oao_entity_set IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_odata_entity_set~set_creatable.
     mv_creatable = iv_creatable.

@@ -9,13 +9,13 @@ CLASS /iwfnd/cl_sodata_http_handler IMPLEMENTATION.
   METHOD if_http_extension~handle_request.
 
     DATA lv_path  TYPE string.
-    DATA ls_data  TYPE zcl_http_handler=>ty_data.
+    DATA ls_data  TYPE zcl_oao_http_handler=>ty_data.
     DATA lx_error TYPE REF TO cx_static_check.
 
     lv_path = server->request->get_header_field( '~path' ).
 
     TRY.
-        ls_data = zcl_http_handler=>handle( lv_path ).
+        ls_data = zcl_oao_http_handler=>handle( lv_path ).
         server->response->set_header_field(
           name  = 'content-type'
           value = ls_data-content_type ).
