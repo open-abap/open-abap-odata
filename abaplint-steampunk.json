@@ -8,6 +8,13 @@
       "files": "/src/**/*.*"
     }
   ],
+  "rename": {
+    "output": "steampunk_renamed",
+    "patterns": [
+      {"type": "CLAS|INTF|TTYP|DTEL", "oldName": "/iwbep/", "newName": "z"},
+      {"type": "DTEL", "oldName": "TEXTPOOLKY", "newName": "ZOAO_TEXTPOOLKY"}
+    ]
+  },
   "syntax": {
     "version": "Cloud",
     "errorNamespace": "."

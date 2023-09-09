@@ -379,11 +379,7 @@ CLASS zcl_zsegw_dpc IMPLEMENTATION.
     lo_logger = /iwbep/if_mgw_conv_srv_runtime~get_logger( ).
 
     IF iv_rfc_dest IS INITIAL OR iv_rfc_dest = 'NONE'.
-      CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
-        EXPORTING
-          wait   = abap_true
-        IMPORTING
-          return = lt_message.
+      COMMIT WORK AND WAIT.
     ELSE.
       CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
         DESTINATION iv_rfc_dest

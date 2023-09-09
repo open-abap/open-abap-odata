@@ -6,16 +6,16 @@
   "scripts": {
     "lint": "abaplint",
     "unit": "rm -rf output && abap_transpile && echo RUNNING && node --expose-gc output/index.mjs && echo OK",
-    "steampunk:files": "rm -rf steampunk && mkdir steampunk && cp -r src/* steampunk && cp test/test1/*.clas* steampunk && rm steampunk/oo/*cl_sodata_http_handler.clas.abap",
+    "steampunk:files": "rm -rf steampunk && mkdir steampunk && cp -r src/* steampunk && cp test/test1/*.clas* steampunk && cp test/test1/zsegw.tabl.xml steampunk && rm steampunk/*cl_sodata_http_handler.clas.abap",
     "steampunk:rename": "abaplint abaplint-steampunk.json --rename",
     "steampunk:lint": "abaplint abaplint-steampunk.json",
-    "steampunk": "npm run steampunk:files && steampunk:rename && steampunk:lint",
+    "steampunk": "npm run steampunk:files && npm run steampunk:rename && npm run steampunk:lint",
     "test": "npm run lint && npm run unit && mocha test/mocha.mjs"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.102.35",
+    "@abaplint/cli": "^2.102.36",
     "@abaplint/database-sqlite": "^2.7.93",
     "chai": "^4.3.8",
     "mocha": "^10.2.0",
