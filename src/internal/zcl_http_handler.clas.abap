@@ -11,13 +11,20 @@ CLASS zcl_http_handler DEFINITION PUBLIC.
       RAISING cx_static_check.
 
   PRIVATE SECTION.
+    CONSTANTS gc_host TYPE string VALUE 'http://localhost:8080'.
+
     CLASS-METHODS metadata
-      RETURNING VALUE(rv_xml) TYPE string
-      RAISING /iwbep/cx_mgw_med_exception.
+      RETURNING
+        VALUE(rv_xml) TYPE string
+      RAISING
+        /iwbep/cx_mgw_med_exception.
 
     CLASS-METHODS data
-      RETURNING VALUE(rv_json) TYPE string
-      RAISING /iwbep/cx_mgw_med_exception.
+      RETURNING
+        VALUE(rv_json) TYPE string
+      RAISING
+        /iwbep/cx_mgw_busi_exception
+        /iwbep/cx_mgw_tech_exception.
 
     CLASS-METHODS map_boolean
       IMPORTING iv_boolean TYPE abap_bool
@@ -30,12 +37,8 @@ CLASS zcl_http_handler IMPLEMENTATION.
 
 * todo,
     IF iv_path CP '*$metadata'.
-      TRY.
-          rs_data-content_type = 'text/xml'.
-          rs_data-data = metadata( ).
-        CATCH /iwbep/cx_mgw_med_exception.
-          WRITE / 'exception'.
-      ENDTRY.
+      rs_data-content_type = 'text/xml'.
+      rs_data-data = metadata( ).
     ELSE.
       rs_data-content_type = 'application/json'.
       rs_data-data = data( ).
@@ -55,6 +58,28 @@ CLASS zcl_http_handler IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD data.
+
+    DATA lo_dpc             TYPE REF TO zcl_zsegw_dpc_ext.
+    DATA lt_filter_option   TYPE /iwbep/t_mgw_select_option.
+    DATA ls_paging          TYPE /iwbep/s_mgw_paging.
+    DATA lt_key_tab         TYPE /iwbep/t_mgw_name_value_pair.
+    DATA lt_navigation_path TYPE /iwbep/t_mgw_navigation_path.
+    DATA lt_order           TYPE /iwbep/t_mgw_sorting_order.
+
+    CREATE OBJECT lo_dpc.
+
+* todo,
+    lo_dpc->zsegwset_get_entityset(
+      iv_entity_name           = ''
+      iv_entity_set_name       = ''
+      iv_source_name           = ''
+      it_filter_select_options = lt_filter_option
+      is_paging                = ls_paging
+      it_key_tab               = lt_key_tab
+      it_navigation_path       = lt_navigation_path
+      it_order                 = lt_order
+      iv_filter_string         = ''
+      iv_search_string         = '' ).
 
 * todo
     rv_json = `{` && |\n| &&
@@ -76,7 +101,6 @@ CLASS zcl_http_handler IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD metadata.
-    CONSTANTS lc_host    TYPE string VALUE 'http://localhost:8080'.
 
     DATA mpc             TYPE REF TO zcl_zsegw_mpc_ext.
     DATA lv_namespace    TYPE string.
@@ -127,8 +151,8 @@ CLASS zcl_http_handler IMPLEMENTATION.
       |      <EntityContainer Name="{ lv_namespace }_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="json">\n| &&
       |        <EntitySet Name="zsegwSet" EntityType="{ lv_namespace }.zsegw" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>\n| &&
       |      </EntityContainer>\n| &&
-      |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="{ lc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&
-      |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="{ lc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&
+      |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="{ gc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&
+      |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="{ gc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&
       |    </Schema>\n| &&
       |  </edmx:DataServices>\n| &&
       |</edmx:Edmx>|.
