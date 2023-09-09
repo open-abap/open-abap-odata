@@ -5,6 +5,6 @@ INTERFACE /iwbep/if_mgw_odata_item PUBLIC.
       iv_text_element_symbol    TYPE textpoolky
       iv_text_element_container TYPE string OPTIONAL
     RAISING
-      /iwbep/cx_mgw_med_exception .
+      /iwbep/cx_mgw_med_exception.
 
 ENDINTERFACE.

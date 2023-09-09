@@ -17,11 +17,23 @@ INTERFACE /iwbep/if_mgw_odata_entity_typ PUBLIC.
 
   METHODS create_property
     IMPORTING
-      iv_property_name  TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
-      iv_abap_fieldname TYPE clike OPTIONAL
+      iv_property_name   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_abap_fieldname  TYPE clike OPTIONAL
     RETURNING
       VALUE(ro_property) TYPE REF TO /iwbep/if_mgw_odata_property
     RAISING
       /iwbep/cx_mgw_med_exception.
+
+  METHODS get_property
+    IMPORTING
+      iv_property_name   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+    RETURNING
+      VALUE(ro_property) TYPE REF TO /iwbep/if_mgw_odata_property
+    RAISING
+      /iwbep/cx_mgw_med_exception.
+
+  METHODS get_properties
+    RETURNING
+      VALUE(rt_properties) TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
 
 ENDINTERFACE.

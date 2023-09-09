@@ -14,9 +14,10 @@ CLASS zcl_zsegw_dpc_ext IMPLEMENTATION.
 
   METHOD zsegwset_get_entityset.
 
-    SELECT * FROM zsegw
-      INTO CORRESPONDING FIELDS OF TABLE et_entityset
-      ORDER BY PRIMARY KEY ##SUBRC_OK.
+    DATA row LIKE LINE OF et_entityset.
+    row-something1 = 'HELLO'.
+    row-something2 = 'WORLD'.
+    INSERT row INTO TABLE et_entityset.
 
   ENDMETHOD.
 ENDCLASS.

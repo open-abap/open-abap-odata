@@ -17,32 +17,10 @@
     "7bit_ascii": true,
     "abapdoc": false,
     "align_parameters": true,
-    "allowed_object_naming": {
-      "exclude": [],
-      "severity": "Error"
-    },
-    "allowed_object_types": {
-      "exclude": [],
-      "severity": "Error",
-      "allowed": []
-    },
-    "ambiguous_statement": {
-      "exclude": [],
-      "severity": "Error"
-    },
-    "avoid_use": {
-      "exclude": [],
-      "severity": "Error",
-      "skipQuickFix": false,
-      "define": true,
-      "statics": true,
-      "defaultKey": true,
-      "break": true,
-      "testSeams": true,
-      "describeLines": true,
-      "exportToMemory": true,
-      "exportToDatabase": true
-    },
+    "allowed_object_naming": true,
+    "allowed_object_types": true,
+    "ambiguous_statement": true,
+    "avoid_use": true,
     "begin_end_names": {
       "exclude": [],
       "severity": "Error"
@@ -358,9 +336,7 @@
       "count": 1
     },
     "line_break_style": false,
-    "line_length": {
-      "length": 140
-    },
+    "line_length": false,
     "line_only_punc": {
       "exclude": [],
       "severity": "Error",
@@ -629,15 +605,10 @@
       "severity": "Error"
     },
     "space_before_dot": {
-      "exclude": [],
-      "severity": "Error",
-      "ignoreGlobalDefinition": true,
-      "ignoreExceptions": true
+      "ignoreGlobalDefinition": false,
+      "ignoreExceptions": false
     },
-    "sql_escape_host_variables": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "sql_escape_host_variables": true,
     "sql_value_conversion": {
       "exclude": [],
       "severity": "Error"

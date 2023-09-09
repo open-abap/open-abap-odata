@@ -1,19 +1,19 @@
 CLASS zcl_zsegw_mpc DEFINITION
   PUBLIC
   INHERITING FROM /iwbep/cl_mgw_push_abs_model
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
 
     TYPES ts_zsegw TYPE zsegw.
     TYPES tt_zsegw TYPE STANDARD TABLE OF ts_zsegw.
     TYPES: BEGIN OF ts_text_element,
-            artifact_name  TYPE c LENGTH 40,
-            artifact_type  TYPE c LENGTH 4,
+            artifact_name        TYPE c LENGTH 40,
+            artifact_type        TYPE c LENGTH 4,
             parent_artifact_name TYPE c LENGTH 40,
             parent_artifact_type TYPE c LENGTH 4,
-            text_symbol    TYPE textpoolky,
-          END OF ts_text_element .
+            text_symbol          TYPE textpoolky,
+          END OF ts_text_element.
     TYPES tt_text_elements TYPE STANDARD TABLE OF ts_text_element WITH KEY text_symbol.
 
     CONSTANTS gc_zsegw TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name VALUE 'zsegw' ##NO_TEXT.
@@ -22,7 +22,7 @@ CLASS zcl_zsegw_mpc DEFINITION
       RETURNING
         VALUE(rt_text_elements) TYPE tt_text_elements
       RAISING
-        /iwbep/cx_mgw_med_exception .
+        /iwbep/cx_mgw_med_exception.
 
     METHODS define REDEFINITION.
     METHODS get_last_modified REDEFINITION.
@@ -33,7 +33,7 @@ CLASS zcl_zsegw_mpc DEFINITION
 
     METHODS define_zsegw
       RAISING
-      /iwbep/cx_mgw_med_exception .
+      /iwbep/cx_mgw_med_exception.
 ENDCLASS.
 
 
@@ -81,8 +81,8 @@ CLASS zcl_zsegw_mpc IMPLEMENTATION.
     lo_property->set_nullable( abap_false ).
     lo_property->set_filterable( abap_false ).
     lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
-      iv_key     = 'unicode'
-        iv_value = 'false' ).
+      iv_key   = 'unicode'
+      iv_value = 'false' ).
     lo_property = lo_entity_type->create_property( iv_property_name  = 'Something2'
                                                    iv_abap_fieldname = 'SOMETHING2' ). "#EC NOTEXT
     lo_property->set_label_from_text_element( iv_text_element_symbol    = '002'
