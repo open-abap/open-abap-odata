@@ -45,4 +45,27 @@ describe('Integration Test', async () => {
     expect(await res.text()).to.equal(expected);
   });
 
+  it('get data', async () => {
+    const res = await fetch('http://localhost:3030/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet?$format=json');
+    expect(res.status).to.equal(200);
+
+    const expected = `{
+  "d" : {
+    "results" : [
+      {
+        "__metadata" : {
+          "id" : "http://localhost:3030/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet('HELLO')",
+          "uri" : "http://localhost:3030/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet('HELLO')",
+          "type" : "ZSEGW_SRV.zsegw"
+        },
+        "Something1" : "HELLO",
+        "Something2" : "WORLD"
+      }
+    ]
+  }
+}`;
+
+    expect(await res.text()).to.equal(expected);
+  });
+
 });
