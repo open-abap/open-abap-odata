@@ -1,6 +1,6 @@
 {
   "global": {
-    "files": "/steampunk_renamed/**/*.*"
+    "files": "/steampunk_input/**/*.*"
   },
   "dependencies": [
     {
@@ -8,6 +8,14 @@
       "files": "/src/**/*.*"
     }
   ],
+  "rename": {
+    "output": "steampunk_renamed",
+    "patterns": [
+      {"type": "TTYP|DTEL|TABL", "oldName": "/iwbep/", "newName": "zoao_"},
+      {"type": "CLAS|INTF", "oldName": "/iwbep/", "newName": "z"},
+      {"type": "DTEL", "oldName": "TEXTPOOLKY", "newName": "ZOAO_TEXTPOOLKY"}
+    ]
+  },
   "syntax": {
     "version": "Cloud",
     "errorNamespace": "."

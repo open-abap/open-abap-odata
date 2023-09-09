@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "abaplint",
     "unit": "rm -rf output && abap_transpile && echo RUNNING && node --expose-gc output/index.mjs && echo OK",
-    "steampunk:files": "rm -rf steampunk && mkdir steampunk && cp -r src/* steampunk && cp test/test1/*.clas* steampunk && cp test/test1/zsegw.tabl.xml steampunk && rm steampunk/*cl_sodata_http_handler.clas.abap",
-    "steampunk:rename": "abaplint abaplint-steampunk.json --rename",
+    "steampunk:files": "rm -rf steampunk_input && mkdir steampunk_input && cp -r src/* steampunk_input && cp test/test1/*.clas* steampunk_input && cp test/test1/zsegw.tabl.xml steampunk_input && rm steampunk_input/*cl_sodata_http_handler.clas.abap",
+    "steampunk:rename": "abaplint abaplint-rename.json --rename",
     "steampunk:lint": "abaplint abaplint-steampunk.json",
     "steampunk": "npm run steampunk:files && npm run steampunk:rename && npm run steampunk:lint",
     "test": "npm run lint && npm run unit && mocha test/mocha.mjs"
