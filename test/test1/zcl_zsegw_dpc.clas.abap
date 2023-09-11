@@ -288,9 +288,9 @@ CLASS zcl_zsegw_dpc IMPLEMENTATION.
 *     Send specific entity data to the caller interface
         copy_data_to_ref(
           EXPORTING
-          is_data = zsegwset_get_entityset
+            is_data = zsegwset_get_entityset
           CHANGING
-          cr_data = er_entityset ).
+            cr_data = er_entityset ).
 
       WHEN OTHERS.
         super->/iwbep/if_mgw_appl_srv_runtime~get_entityset(

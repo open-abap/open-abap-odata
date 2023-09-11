@@ -66,37 +66,54 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lt_navigation_path TYPE /iwbep/t_mgw_navigation_path.
     DATA lt_order           TYPE /iwbep/t_mgw_sorting_order.
     DATA lo_request_context TYPE REF TO /iwbep/if_mgw_req_entityset.
+    DATA lr_entityset       TYPE REF TO data.
+
+    FIELD-SYMBOLS <tab> TYPE ANY TABLE.
+    FIELD-SYMBOLS <row> TYPE any.
 
     CREATE OBJECT lo_dpc.
-    CREATE OBJECT lo_request_context TYPE zcl_oao_request_context.
+    CREATE OBJECT lo_request_context TYPE zcl_oao_request_context
+      EXPORTING
+        iv_entity_set_name = 'zsegwSet'.
 
 * todo,
     lo_dpc->/iwbep/if_mgw_appl_srv_runtime~get_entityset(
-      iv_entity_name           = 'zsegwSet'
-      iv_entity_set_name       = ''
-      iv_source_name           = ''
-      it_filter_select_options = lt_filter_option
-      is_paging                = ls_paging
-      it_key_tab               = lt_key_tab
-      it_navigation_path       = lt_navigation_path
-      it_order                 = lt_order
-      iv_filter_string         = ''
-      iv_search_string         = ''
-      io_tech_request_context  = lo_request_context ).
+      EXPORTING
+        iv_entity_name           = 'zsegwSet'
+        iv_entity_set_name       = ''
+        iv_source_name           = ''
+        it_filter_select_options = lt_filter_option
+        is_paging                = ls_paging
+        it_key_tab               = lt_key_tab
+        it_navigation_path       = lt_navigation_path
+        it_order                 = lt_order
+        iv_filter_string         = ''
+        iv_search_string         = ''
+        io_tech_request_context  = lo_request_context
+      IMPORTING
+        er_entityset             = lr_entityset ).
 
-* todo
+    ASSIGN lr_entityset->* TO <tab> ##SUBRC_OK.
+
     rv_json = `{` && |\n| &&
       `  "d" : {` && |\n| &&
-      `    "results" : [` && |\n| &&
-      `      {` && |\n| &&
-      `        "__metadata" : {` && |\n| &&
-      `          "id" : "http://localhost:3030/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet('HELLO')",` && |\n| &&
-      `          "uri" : "http://localhost:3030/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet('HELLO')",` && |\n| &&
-      `          "type" : "ZSEGW_SRV.zsegw"` && |\n| &&
-      `        },` && |\n| &&
-      `        "Something1" : "HELLO",` && |\n| &&
-      `        "Something2" : "WORLD"` && |\n| &&
-      `      }` && |\n| &&
+      `    "results" : [` && |\n|.
+
+    LOOP AT <tab> ASSIGNING <row>.
+* todo
+      rv_json = rv_json &&
+        `      {` && |\n| &&
+        `        "__metadata" : {` && |\n| &&
+        `          "id" : "http://localhost:3030/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet('HELLO')",` && |\n| &&
+        `          "uri" : "http://localhost:3030/sap/opu/odata/sap/ZSEGW_SRV/zsegwSet('HELLO')",` && |\n| &&
+        `          "type" : "ZSEGW_SRV.zsegw"` && |\n| &&
+        `        },` && |\n| &&
+        `        "Something1" : "HELLO",` && |\n| &&
+        `        "Something2" : "WORLD"` && |\n| &&
+        `      }` && |\n|.
+    ENDLOOP.
+
+    rv_json = rv_json &&
       `    ]` && |\n| &&
       `  }` && |\n| &&
       `}`.

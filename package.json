@@ -15,7 +15,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.102.36",
+    "@abaplint/cli": "^2.102.37",
     "@abaplint/database-sqlite": "^2.7.93",
     "chai": "^4.3.8",
     "mocha": "^10.2.0",
