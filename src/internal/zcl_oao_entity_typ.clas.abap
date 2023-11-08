@@ -8,8 +8,16 @@ ENDCLASS.
 
 CLASS zcl_oao_entity_typ IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_odata_entity_typ~create_navigation_property.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_entity_typ~create_entity_set.
     CREATE OBJECT ro_entity_set TYPE zcl_oao_entity_set.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_entity_typ~set_is_media.
+    ASSERT 1 = 'todo'.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~bind_structure.

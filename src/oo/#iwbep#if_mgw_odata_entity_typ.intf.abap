@@ -36,4 +36,18 @@ INTERFACE /iwbep/if_mgw_odata_entity_typ PUBLIC.
     RETURNING
       VALUE(rt_properties) TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
 
+  METHODS set_is_media
+    IMPORTING
+      iv_is_media TYPE abap_bool DEFAULT abap_true.
+
+  METHODS create_navigation_property
+    IMPORTING
+      iv_property_name              TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_association_name           TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_abap_fieldname             TYPE clike OPTIONAL
+    RETURNING
+      VALUE(ro_navigation_property) TYPE REF TO /iwbep/if_mgw_odata_nav_prop
+    RAISING
+      /iwbep/cx_mgw_med_exception.
+
 ENDINTERFACE.
