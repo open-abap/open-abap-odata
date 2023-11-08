@@ -14,6 +14,22 @@ ENDCLASS.
 
 CLASS zcl_oao_property IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_decimal.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_precison.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_conversion_exit.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_datetime.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_item~set_label_from_text_element.
 * todo??
     RETURN.

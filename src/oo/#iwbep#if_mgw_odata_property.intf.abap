@@ -36,4 +36,16 @@ INTERFACE /iwbep/if_mgw_odata_property PUBLIC.
     IMPORTING
       iv_key TYPE abap_bool DEFAULT abap_true.
 
+  METHODS set_type_edm_decimal.
+
+  METHODS set_precison
+    IMPORTING
+      iv_precision TYPE i.
+
+  METHODS set_conversion_exit
+    IMPORTING
+      iv_conv_exit TYPE clike.
+
+  METHODS set_type_edm_datetime.
+
 ENDINTERFACE.
