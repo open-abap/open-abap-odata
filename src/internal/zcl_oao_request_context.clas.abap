@@ -11,6 +11,22 @@ ENDCLASS.
 
 CLASS zcl_oao_request_context IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_req_entityset~get_top.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_req_entityset~get_skip.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_req_entityset~get_converted_source_keys.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_req_entityset~get_filter.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD constructor.
     mv_entity_set_name = iv_entity_set_name.
   ENDMETHOD.
