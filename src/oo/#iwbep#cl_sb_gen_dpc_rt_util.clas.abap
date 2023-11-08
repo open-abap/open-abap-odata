@@ -20,9 +20,21 @@ CLASS /iwbep/cl_sb_gen_dpc_rt_util DEFINITION PUBLIC.
         /iwbep/cx_mgw_busi_exception
         /iwbep/cx_mgw_tech_exception.
 
+    CLASS-METHODS get_rfc_destination
+      IMPORTING
+        io_dp_facade              TYPE REF TO /iwbep/if_mgw_dp_facade
+      RETURNING
+        VALUE(rv_rfc_destination) TYPE rfcdest
+      RAISING
+        /iwbep/cx_mgw_tech_exception.
+
 ENDCLASS.
 
 CLASS /iwbep/cl_sb_gen_dpc_rt_util IMPLEMENTATION.
+
+  METHOD get_rfc_destination.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
 
   METHOD rfc_save_log.
     ASSERT 1 = 'todo'.

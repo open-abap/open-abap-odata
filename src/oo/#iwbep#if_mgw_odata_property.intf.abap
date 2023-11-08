@@ -48,4 +48,8 @@ INTERFACE /iwbep/if_mgw_odata_property PUBLIC.
 
   METHODS set_type_edm_datetime.
 
+  METHODS set_type_edm_int32.
+
+  METHODS set_type_edm_boolean.
+
 ENDINTERFACE.

@@ -14,6 +14,14 @@ ENDCLASS.
 
 CLASS zcl_oao_property IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_int32.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_boolean.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_property~set_type_edm_decimal.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
