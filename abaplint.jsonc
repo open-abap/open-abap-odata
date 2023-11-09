@@ -25,10 +25,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "begin_single_include": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "begin_single_include": false,
     "call_transaction_authority_check": {
       "exclude": [],
       "severity": "Error"
@@ -402,10 +399,7 @@
       "reportDynamic": true,
       "ownTables": "^[yz]"
     },
-    "msag_consistency": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "msag_consistency": true,
     "names_no_dash": {
       "exclude": [],
       "severity": "Error"
@@ -550,10 +544,7 @@
     "rfc_error_handling": {
       "exclude": ["dpc.clas.abap"]
     },
-    "select_add_order_by": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "select_add_order_by": true,
     "select_performance": {
       "exclude": [],
       "severity": "Error",
