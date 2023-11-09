@@ -16,4 +16,6 @@ INTERFACE /iwbep/if_mgw_med_odata_types PUBLIC.
                string TYPE ty_e_med_edm_type VALUE 'Edm.String',
              END OF gcs_edm_data_types.
 
+  TYPES ty_e_med_cardinality TYPE c LENGTH 1.
+
 ENDINTERFACE.

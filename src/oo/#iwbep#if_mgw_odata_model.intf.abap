@@ -25,4 +25,28 @@ INTERFACE /iwbep/if_mgw_odata_model PUBLIC.
     EXPORTING
       ev_namespace TYPE string.
 
+  METHODS create_association
+    IMPORTING
+      iv_association_name TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_left_type        TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_right_type       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_left_card        TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_cardinality
+      iv_right_card       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_cardinality
+      iv_def_assoc_set    TYPE abap_bool DEFAULT abap_true
+    RETURNING
+      VALUE(ro_association) TYPE REF TO /iwbep/if_mgw_odata_assoc
+    RAISING
+      /iwbep/cx_mgw_med_exception.
+
+  METHODS create_association_set
+    IMPORTING
+      iv_association_set_name  TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_left_entity_set_name  TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_right_entity_set_name TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_association_name      TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name OPTIONAL
+    RETURNING
+      VALUE(ro_association_set) TYPE REF TO /iwbep/if_mgw_odata_assoc_set
+    RAISING
+      /iwbep/cx_mgw_med_exception.
+
 ENDINTERFACE.
