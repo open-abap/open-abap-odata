@@ -13,6 +13,14 @@ ENDCLASS.
 
 CLASS zcl_oao_model IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_odata_model~create_association.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_model~create_association_set.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_model~create_entity_type.
     DATA ls_row LIKE LINE OF mt_entities.
 

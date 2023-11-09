@@ -25,6 +25,21 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 ENDCLASS.
 
 CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
+  METHOD /iwbep/if_mgw_appl_srv_runtime~execute_action.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~get_expanded_entity.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~get_expanded_entityset.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~patch_entity.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
 
   METHOD /iwbep/if_mgw_conv_srv_runtime~copy_data_to_ref.
     GET REFERENCE OF is_data INTO cr_data.
