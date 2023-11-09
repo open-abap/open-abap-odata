@@ -7,6 +7,11 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 
     ALIASES copy_data_to_ref FOR /iwbep/if_mgw_conv_srv_runtime~copy_data_to_ref.
 
+    TYPES BEGIN OF ty_s_media_resource.
+    TYPES include TYPE /iwbep/if_mgw_core_srv_runtime=>ty_s_media_resource.
+    TYPES END OF ty_s_media_resource.
+
+
   PROTECTED SECTION.
     DATA mo_context TYPE REF TO /iwbep/if_mgw_context.
 
@@ -23,6 +28,10 @@ CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_conv_srv_runtime~copy_data_to_ref.
     GET REFERENCE OF is_data INTO cr_data.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_conv_srv_runtime~get_dp_facade.
+    ASSERT 1 = 'todo'.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_conv_srv_runtime~get_logger.
