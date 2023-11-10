@@ -46,4 +46,13 @@ INTERFACE if_sadl_gw_dpc PUBLIC.
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
 
+  METHODS execute_action
+    IMPORTING
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_func_import
+    EXPORTING
+      er_data                 TYPE REF TO data
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
 ENDINTERFACE.
