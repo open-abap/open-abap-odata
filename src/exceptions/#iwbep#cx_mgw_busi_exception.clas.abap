@@ -17,8 +17,18 @@ CLASS /iwbep/cx_mgw_busi_exception DEFINITION INHERITING FROM /iwbep/cx_mgw_base
                  attr3 TYPE scx_attrname VALUE '',
                  attr4 TYPE scx_attrname VALUE '',
                END OF business_error_unlimited.
+
+    METHODS constructor
+      IMPORTING
+        textid            LIKE if_t100_message=>t100key OPTIONAL
+        message_unlimited TYPE string OPTIONAL
+        previous          LIKE previous OPTIONAL.
 ENDCLASS.
 
 CLASS /iwbep/cx_mgw_busi_exception IMPLEMENTATION.
+
+  METHOD constructor.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
 
 ENDCLASS.
