@@ -20,4 +20,12 @@ INTERFACE /iwbep/if_mgw_req_entityset PUBLIC.
     RETURNING
       VALUE(ro_filter) TYPE REF TO /iwbep/if_mgw_req_filter.
 
+  METHODS has_inlinecount
+    RETURNING
+      VALUE(rv_has_inlinecount) TYPE abap_bool.
+
+  METHODS has_count
+    RETURNING
+      VALUE(rv_has_count) TYPE abap_bool.
+
 ENDINTERFACE.

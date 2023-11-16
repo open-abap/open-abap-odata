@@ -15,6 +15,14 @@ CLASS zcl_oao_request_context IMPLEMENTATION.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_req_entityset~has_inlinecount.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_req_entityset~has_count.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_req_entityset~get_skip.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
