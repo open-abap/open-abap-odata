@@ -1,7 +1,7 @@
 INTERFACE /iwbep/if_mgw_appl_srv_runtime PUBLIC.
 
   TYPES ty_s_mgw_response_entity_cntxt TYPE string.
-  TYPES ty_s_mgw_response_context      TYPE string.
+  TYPES ty_s_mgw_response_context      TYPE /iwbep/if_mgw_appl_types=>ty_s_mgw_response_context.
   TYPES ty_s_media_resource            TYPE /iwbep/if_mgw_appl_types=>ty_s_media_resource.
 
   METHODS get_stream
