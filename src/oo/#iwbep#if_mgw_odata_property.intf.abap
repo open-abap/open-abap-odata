@@ -54,4 +54,6 @@ INTERFACE /iwbep/if_mgw_odata_property PUBLIC.
 
   METHODS set_type_edm_int16.
 
+  METHODS set_type_edm_time.
+
 ENDINTERFACE.
