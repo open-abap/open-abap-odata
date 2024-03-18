@@ -22,6 +22,7 @@ CLASS /iwbep/cx_mgw_busi_exception DEFINITION INHERITING FROM /iwbep/cx_mgw_base
       IMPORTING
         textid            LIKE if_t100_message=>t100key OPTIONAL
         message_unlimited TYPE string OPTIONAL
+        message           TYPE clike OPTIONAL
         previous          LIKE previous OPTIONAL.
 ENDCLASS.
 
