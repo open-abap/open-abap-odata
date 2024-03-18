@@ -8,6 +8,10 @@ ENDCLASS.
 
 CLASS zcl_oao_entity_typ IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_odata_item~set_label_from_text_element.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_entity_typ~create_navigation_property.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
