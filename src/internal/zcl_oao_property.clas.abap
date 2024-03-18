@@ -14,6 +14,14 @@ ENDCLASS.
 
 CLASS zcl_oao_property IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_time.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~disable_conversion.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_property~set_type_edm_int16.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
