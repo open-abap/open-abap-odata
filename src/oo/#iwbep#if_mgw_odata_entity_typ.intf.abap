@@ -1,5 +1,9 @@
 INTERFACE /iwbep/if_mgw_odata_entity_typ PUBLIC.
 
+  INTERFACES /iwbep/if_mgw_odata_item.
+
+  ALIASES set_label_from_text_element FOR /iwbep/if_mgw_odata_item~set_label_from_text_element.
+
   METHODS create_entity_set
     IMPORTING
       iv_entity_set_name   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name

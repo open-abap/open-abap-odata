@@ -1,8 +1,8 @@
 INTERFACE /iwbep/if_mgw_med_odata_types PUBLIC.
 
-  TYPES ty_e_med_entity_name TYPE /iwbep/med_external_name.
-
+  TYPES ty_e_med_entity_name   TYPE /iwbep/med_external_name.
   TYPES ty_e_med_internal_name TYPE c LENGTH 40.
+  TYPES ty_e_med_http_method   TYPE c LENGTH 6.
 
   TYPES: BEGIN OF ty_s_mgw_odata_property,
            external_name TYPE /iwbep/med_external_name,
