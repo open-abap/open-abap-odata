@@ -22,4 +22,11 @@ INTERFACE /iwbep/if_mgw_appl_types PUBLIC.
            document_description          TYPE REF TO object,
          END OF ty_s_mgw_response_context.
 
+  TYPES: BEGIN OF ty_s_runtime_features,
+           initial_for_null_in_filter  TYPE abap_bool,
+           provided_properties         TYPE abap_bool,
+           technical_properties        TYPE abap_bool,
+           transient_flag_for_messages TYPE abap_bool,
+         END OF ty_s_runtime_features.
+
 ENDINTERFACE.
