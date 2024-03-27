@@ -9,9 +9,17 @@ CLASS /iwbep/cl_mgw_request DEFINITION PUBLIC.
     INTERFACES /iwbep/if_mgw_req_entity_u.
     INTERFACES /iwbep/if_mgw_req_func_import.
 
+    METHODS get_request_details
+      RETURNING
+        VALUE(rs_request) TYPE /iwbep/if_mgw_core_srv_runtime=>ty_s_mgw_request_context.
+
 ENDCLASS.
 
 CLASS /iwbep/cl_mgw_request IMPLEMENTATION.
+  METHOD get_request_details.
+    RETURN.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_req_entity~get_entity_set_name.
     RETURN.
   ENDMETHOD.
