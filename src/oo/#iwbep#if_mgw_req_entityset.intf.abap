@@ -28,4 +28,8 @@ INTERFACE /iwbep/if_mgw_req_entityset PUBLIC.
     RETURNING
       VALUE(rv_has_count) TYPE abap_bool.
 
+  METHODS get_orderby
+    RETURNING
+      VALUE(rt_orderby) TYPE /iwbep/t_mgw_tech_order.
+
 ENDINTERFACE.

@@ -11,6 +11,10 @@ ENDCLASS.
 
 CLASS zcl_oao_request_context IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_req_entityset~get_orderby.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_req_entityset~get_top.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
