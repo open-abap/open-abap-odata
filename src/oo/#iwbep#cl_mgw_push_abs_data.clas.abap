@@ -13,6 +13,7 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 
   PROTECTED SECTION.
     DATA mo_context TYPE REF TO /iwbep/if_mgw_context.
+    DATA mr_request_details TYPE REF TO /iwbep/if_mgw_core_srv_runtime=>ty_s_mgw_request_context.
 
     METHODS check_subscription_authority
       IMPORTING
