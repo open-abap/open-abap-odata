@@ -1,6 +1,8 @@
 CLASS /iwbep/cl_cos_logger DEFINITION PUBLIC.
   PUBLIC SECTION.
 
+    CONSTANTS success TYPE c LENGTH 1 VALUE 'S'.
+
     METHODS log_message
       IMPORTING
         iv_msg_type         TYPE symsgty
