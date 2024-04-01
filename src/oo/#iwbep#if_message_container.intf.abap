@@ -11,4 +11,9 @@ INTERFACE /iwbep/if_message_container PUBLIC.
       iv_msg_text               TYPE bapi_msg
       iv_add_to_response_header TYPE abap_bool DEFAULT abap_false.
 
+  METHODS add_messages_from_bapi
+    IMPORTING
+      it_bapi_messages          TYPE any
+      iv_add_to_response_header TYPE abap_bool DEFAULT abap_false.
+
 ENDINTERFACE.
