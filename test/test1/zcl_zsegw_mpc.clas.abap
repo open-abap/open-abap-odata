@@ -6,7 +6,7 @@ CLASS zcl_zsegw_mpc DEFINITION
   PUBLIC SECTION.
 
     TYPES ts_zsegw TYPE zsegw.
-    TYPES tt_zsegw TYPE STANDARD TABLE OF ts_zsegw.
+    TYPES tt_zsegw TYPE STANDARD TABLE OF ts_zsegw WITH DEFAULT KEY.
     TYPES: BEGIN OF ts_text_element,
             artifact_name        TYPE c LENGTH 40,
             artifact_type        TYPE c LENGTH 4,
