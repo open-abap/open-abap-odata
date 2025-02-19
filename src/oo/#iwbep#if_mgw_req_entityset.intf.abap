@@ -32,4 +32,8 @@ INTERFACE /iwbep/if_mgw_req_entityset PUBLIC.
     RETURNING
       VALUE(rt_orderby) TYPE /iwbep/t_mgw_tech_order.
 
+  METHODS get_osql_where_clause_convert
+    RETURNING
+      VALUE(rv_osql_where_clause) TYPE string.
+
 ENDINTERFACE.
