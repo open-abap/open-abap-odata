@@ -61,6 +61,10 @@ CLASS /iwbep/cl_mgw_request IMPLEMENTATION.
     RETURN.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_req_entityset~get_osql_where_clause_convert.
+    RETURN.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_req_entity_c~get_entity_set_name.
     RETURN.
   ENDMETHOD.
