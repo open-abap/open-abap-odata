@@ -16,12 +16,12 @@
   "license": "MIT",
 
   "dependencies": {
-    "@abaplint/cli": "^2.113.110",
+    "@abaplint/cli": "^2.113.136",
     "@abaplint/database-sqlite": "^2.10.24",
     "chai": "^5.2.0",
-    "mocha": "^11.2.2",
-    "@abaplint/runtime": "^2.10.49",
-    "@abaplint/transpiler-cli": "^2.10.49",
+    "mocha": "^11.7.1",
+    "@abaplint/runtime": "^2.10.64",
+    "@abaplint/transpiler-cli": "^2.10.64",
     "express": "^4.21.2"
   }
 }
