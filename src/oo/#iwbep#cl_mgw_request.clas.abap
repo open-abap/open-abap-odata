@@ -5,8 +5,8 @@ CLASS /iwbep/cl_mgw_request DEFINITION PUBLIC.
     INTERFACES /iwbep/if_mgw_req_entityset.
     INTERFACES /iwbep/if_mgw_req_entity_c.
     INTERFACES /iwbep/if_mgw_req_entity_d.
-    INTERFACES /iwbep/if_mgw_req_entity_p.
     INTERFACES /iwbep/if_mgw_req_entity_u.
+    INTERFACES /iwbep/if_mgw_req_entity_p.
     INTERFACES /iwbep/if_mgw_req_func_import.
 
     METHODS get_request_details
