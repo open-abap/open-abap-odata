@@ -12,6 +12,9 @@ CLASS zcl_oao_model DEFINITION PUBLIC.
 ENDCLASS.
 
 CLASS zcl_oao_model IMPLEMENTATION.
+  METHOD /iwbep/if_mgw_odata_model~create_action.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_model~create_association.
     ASSERT 1 = 'todo'.
