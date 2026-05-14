@@ -1,6 +1,7 @@
 {
   "global": {
-    "files": "/{src,test}/**/*.*"
+    "files": "/{src,test}/**/*.*",
+    "errorOnDuplicateFilenames": true
   },
   "dependencies": [
     {
@@ -85,6 +86,7 @@
       "openDataset": true,
       "authorityCheck": true,
       "selectSingle": true,
+      "deleteDatabase": true,
       "selectTable": true,
       "updateDatabase": true,
       "insertDatabase": true,
@@ -150,8 +152,6 @@
       "max": 20
     },
     "dangerous_statement": {
-      "exclude": [],
-      "severity": "Error",
       "execSQL": true,
       "kernelCall": true,
       "systemCall": true,
@@ -159,6 +159,7 @@
       "generateDynpro": true,
       "generateReport": true,
       "generateSubroutine": true,
+      "insertTextpool": true,
       "deleteReport": true,
       "deleteTextpool": true,
       "deleteDynpro": true,
@@ -206,6 +207,7 @@
       "if": true,
       "while": true,
       "case": true,
+      "loopAllowIfSubrc": true,
       "select": true,
       "do": true,
       "at": true,
@@ -439,38 +441,7 @@
       "severity": "Error"
     },
     "object_naming": false,
-    "obsolete_statement": {
-      "exclude": [],
-      "severity": "Error",
-      "refresh": true,
-      "compute": true,
-      "add": true,
-      "subtract": true,
-      "multiply": true,
-      "divide": true,
-      "move": true,
-      "requested": true,
-      "occurs": true,
-      "setExtended": true,
-      "withHeaderLine": true,
-      "fieldSymbolStructure": true,
-      "typePools": true,
-      "load": true,
-      "parameter": true,
-      "ranges": true,
-      "communication": true,
-      "pack": true,
-      "selectWithoutInto": true,
-      "freeMemory": true,
-      "exitFromSQL": true,
-      "sortByFS": true,
-      "callTransformation": true,
-      "regex": true,
-      "occurences": true,
-      "clientSpecified": true,
-      "formDefinition": true,
-      "formImplementation": true
-    },
+    "obsolete_statement": true,
     "omit_parameter_name": {
       "exclude": [],
       "severity": "Error"
@@ -646,10 +617,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "unnecessary_chaining": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "unnecessary_chaining": true,
     "unnecessary_pragma": {
       "exclude": [],
       "severity": "Error",
