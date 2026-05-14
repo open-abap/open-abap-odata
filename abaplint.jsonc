@@ -1,6 +1,7 @@
 {
   "global": {
-    "files": "/{src,test}/**/*.*"
+    "files": "/{src,test}/**/*.*",
+    "errorOnDuplicateFilenames": true
   },
   "dependencies": [
     {
