@@ -1,5 +1,11 @@
 INTERFACE /iwbep/if_mgw_odata_model PUBLIC.
 
+  TYPES ty_t_med_entity_names TYPE STANDARD TABLE OF /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name WITH DEFAULT KEY.
+
+  METHODS get_entity_types
+    RETURNING
+      VALUE(rt_entity_types) TYPE ty_t_med_entity_names.
+
   METHODS create_entity_type
     IMPORTING
       iv_entity_type_name TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name

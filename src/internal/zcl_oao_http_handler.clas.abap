@@ -14,12 +14,15 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
     CONSTANTS gc_host TYPE string VALUE 'http://localhost:8080'.
 
     CLASS-METHODS metadata
+      IMPORTING iv_service_name TYPE string
       RETURNING
         VALUE(rv_xml) TYPE string
       RAISING
         /iwbep/cx_mgw_med_exception.
 
     CLASS-METHODS data
+      IMPORTING iv_service_name TYPE string
+                iv_entity_set   TYPE string
       RETURNING
         VALUE(rv_json) TYPE string
       RAISING
@@ -35,13 +38,25 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
   METHOD handle.
 
-* todo,
+    DATA lt_path_parts   TYPE STANDARD TABLE OF string WITH DEFAULT KEY.
+    DATA lv_service_name TYPE string.
+    DATA lv_entity_set   TYPE string.
+
+* Expected URL: /sap/opu/odata/sap/{service_name}/{entity_set_or_$metadata}
+    SPLIT iv_path AT '/' INTO TABLE lt_path_parts.
+    READ TABLE lt_path_parts INTO lv_service_name INDEX 6.
+    ASSERT sy-subrc = 0.
+    READ TABLE lt_path_parts INTO lv_entity_set INDEX 7.
+    ASSERT sy-subrc = 0.
+
     IF iv_path CP '*$metadata'.
       rs_data-content_type = 'text/xml'.
-      rs_data-data = metadata( ).
+      rs_data-data = metadata( lv_service_name ).
     ELSE.
       rs_data-content_type = 'application/json'.
-      rs_data-data = data( ).
+      rs_data-data = data(
+        iv_service_name = lv_service_name
+        iv_entity_set   = lv_entity_set ).
     ENDIF.
 
   ENDMETHOD.
@@ -59,7 +74,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
   METHOD data.
 
-    DATA lo_dpc             TYPE REF TO zcl_zsegw_dpc_ext.
+    DATA lo_dpc             TYPE REF TO /iwbep/cl_mgw_push_abs_data.
+    DATA ls_service         TYPE zcl_oao_services.
     DATA lt_filter_option   TYPE /iwbep/t_mgw_select_option.
     DATA ls_paging          TYPE /iwbep/s_mgw_paging.
     DATA lt_key_tab         TYPE /iwbep/t_mgw_name_value_pair.
@@ -71,15 +87,21 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     FIELD-SYMBOLS <tab> TYPE ANY TABLE.
     FIELD-SYMBOLS <row> TYPE any.
 
-    CREATE OBJECT lo_dpc.
+    SELECT SINGLE *
+      FROM zcl_oao_services
+      WHERE service_name = @iv_service_name
+      INTO @ls_service.
+    ASSERT sy-subrc = 0.
+
+    CREATE OBJECT lo_dpc TYPE (ls_service-dpc_class).
     CREATE OBJECT lo_request_context TYPE zcl_oao_request_context
       EXPORTING
-        iv_entity_set_name = 'zsegwSet'.
+        iv_entity_set_name = iv_entity_set.
 
 * todo,
     lo_dpc->/iwbep/if_mgw_appl_srv_runtime~get_entityset(
       EXPORTING
-        iv_entity_name           = 'zsegwSet'
+        iv_entity_name           = iv_entity_set
         iv_entity_set_name       = ''
         iv_source_name           = ''
         it_filter_select_options = lt_filter_option
@@ -122,20 +144,27 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
   METHOD metadata.
 
-    DATA mpc             TYPE REF TO zcl_zsegw_mpc_ext.
+    DATA mpc             TYPE REF TO /iwbep/cl_mgw_push_abs_model.
+    DATA ls_service      TYPE zcl_oao_services.
     DATA lv_namespace    TYPE string.
-    DATA lt_entity_types TYPE STANDARD TABLE OF /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name WITH DEFAULT KEY.
+    DATA lt_entity_types TYPE /iwbep/if_mgw_odata_model=>ty_t_med_entity_names.
     DATA lv_entity_type  LIKE LINE OF lt_entity_types.
     DATA lo_entity       TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
     DATA lt_properties   TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
     DATA ls_property     LIKE LINE OF lt_properties.
     DATA lo_property     TYPE REF TO zcl_oao_property.
 
-    INSERT zcl_zsegw_mpc_ext=>gc_zsegw INTO TABLE lt_entity_types.
+    SELECT SINGLE *
+      FROM zcl_oao_services
+      WHERE service_name = @iv_service_name
+      INTO @ls_service.
+    ASSERT sy-subrc = 0.
 
-    CREATE OBJECT mpc.
+    CREATE OBJECT mpc TYPE (ls_service-mpc_class).
     mpc->define( ).
     mpc->model->get_schema_namespace( IMPORTING ev_namespace = lv_namespace ).
+
+    lt_entity_types = mpc->model->get_entity_types( ).
 
     rv_xml =
       |<?xml version="1.0" encoding="utf-8"?>\n| &&

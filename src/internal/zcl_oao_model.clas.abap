@@ -35,6 +35,13 @@ CLASS zcl_oao_model IMPLEMENTATION.
     ASSERT sy-subrc = 0.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_odata_model~get_entity_types.
+    FIELD-SYMBOLS <ls_entity> LIKE LINE OF mt_entities.
+    LOOP AT mt_entities ASSIGNING <ls_entity>.
+      APPEND <ls_entity>-entity_name TO rt_entity_types.
+    ENDLOOP.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_model~get_entity_type.
     FIELD-SYMBOLS <ls_entity> LIKE LINE OF mt_entities.
     READ TABLE mt_entities ASSIGNING <ls_entity> WITH TABLE KEY entity_name = iv_entity_name.
