@@ -151,21 +151,7 @@
       "severity": "Error",
       "max": 20
     },
-    "dangerous_statement": {
-      "execSQL": true,
-      "kernelCall": true,
-      "systemCall": true,
-      "insertReport": true,
-      "generateDynpro": true,
-      "generateReport": true,
-      "generateSubroutine": true,
-      "insertTextpool": true,
-      "deleteReport": true,
-      "deleteTextpool": true,
-      "deleteDynpro": true,
-      "exportDynpro": true,
-      "dynamicSQL": true
-    },
+    "dangerous_statement": true,
     "db_operation_in_loop": {
       "exclude": [],
       "severity": "Error"
