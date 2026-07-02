@@ -13,8 +13,7 @@
     "test": "npm run lint && npm run unit && mocha test/mocha.mjs"
   },
   "author": "",
-  "license": "MIT",
-
+  "license": "",
   "dependencies": {
     "@abaplint/cli": "^2.119.37",
     "@abaplint/database-sqlite": "^2.11.78",
