@@ -32,60 +32,60 @@ CLASS zcl_zsegw_dpc DEFINITION PUBLIC INHERITING FROM /iwbep/cl_mgw_push_abs_dat
 
     METHODS zsegwset_delete_entity
       IMPORTING
-      !iv_entity_name TYPE string
-      !iv_entity_set_name TYPE string
-      !iv_source_name TYPE string
-      !it_key_tab TYPE /iwbep/t_mgw_name_value_pair
-      !io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_d OPTIONAL
-      !it_navigation_path TYPE /iwbep/t_mgw_navigation_path
+      iv_entity_name TYPE string
+      iv_entity_set_name TYPE string
+      iv_source_name TYPE string
+      it_key_tab TYPE /iwbep/t_mgw_name_value_pair
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_d OPTIONAL
+      it_navigation_path TYPE /iwbep/t_mgw_navigation_path
       RAISING
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
     METHODS zsegwset_get_entity
       IMPORTING
-      !iv_entity_name TYPE string
-      !iv_entity_set_name TYPE string
-      !iv_source_name TYPE string
-      !it_key_tab TYPE /iwbep/t_mgw_name_value_pair
-      !io_request_object TYPE REF TO /iwbep/if_mgw_req_entity OPTIONAL
-      !io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity OPTIONAL
-      !it_navigation_path TYPE /iwbep/t_mgw_navigation_path
+      iv_entity_name TYPE string
+      iv_entity_set_name TYPE string
+      iv_source_name TYPE string
+      it_key_tab TYPE /iwbep/t_mgw_name_value_pair
+      io_request_object TYPE REF TO /iwbep/if_mgw_req_entity OPTIONAL
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity OPTIONAL
+      it_navigation_path TYPE /iwbep/t_mgw_navigation_path
       EXPORTING
-      !er_entity TYPE zcl_zsegw_mpc=>ts_zsegw
-      !es_response_context TYPE /iwbep/if_mgw_appl_srv_runtime=>ty_s_mgw_response_entity_cntxt
+      er_entity TYPE zcl_zsegw_mpc=>ts_zsegw
+      es_response_context TYPE /iwbep/if_mgw_appl_srv_runtime=>ty_s_mgw_response_entity_cntxt
       RAISING
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
     METHODS zsegwset_get_entityset
       IMPORTING
-      !iv_entity_name TYPE string
-      !iv_entity_set_name TYPE string
-      !iv_source_name TYPE string
-      !it_filter_select_options TYPE /iwbep/t_mgw_select_option
-      !is_paging TYPE /iwbep/s_mgw_paging
-      !it_key_tab TYPE /iwbep/t_mgw_name_value_pair
-      !it_navigation_path TYPE /iwbep/t_mgw_navigation_path
-      !it_order TYPE /iwbep/t_mgw_sorting_order
-      !iv_filter_string TYPE string
-      !iv_search_string TYPE string
-      !io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entityset OPTIONAL
+      iv_entity_name TYPE string
+      iv_entity_set_name TYPE string
+      iv_source_name TYPE string
+      it_filter_select_options TYPE /iwbep/t_mgw_select_option
+      is_paging TYPE /iwbep/s_mgw_paging
+      it_key_tab TYPE /iwbep/t_mgw_name_value_pair
+      it_navigation_path TYPE /iwbep/t_mgw_navigation_path
+      it_order TYPE /iwbep/t_mgw_sorting_order
+      iv_filter_string TYPE string
+      iv_search_string TYPE string
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entityset OPTIONAL
       EXPORTING
-      !et_entityset TYPE zcl_zsegw_mpc=>tt_zsegw
-      !es_response_context TYPE /iwbep/if_mgw_appl_srv_runtime=>ty_s_mgw_response_context
+      et_entityset TYPE zcl_zsegw_mpc=>tt_zsegw
+      es_response_context TYPE /iwbep/if_mgw_appl_srv_runtime=>ty_s_mgw_response_context
       RAISING
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
     METHODS zsegwset_update_entity
       IMPORTING
-      !iv_entity_name TYPE string
-      !iv_entity_set_name TYPE string
-      !iv_source_name TYPE string
-      !it_key_tab TYPE /iwbep/t_mgw_name_value_pair
-      !io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_u OPTIONAL
-      !it_navigation_path TYPE /iwbep/t_mgw_navigation_path
-      !io_data_provider TYPE REF TO /iwbep/if_mgw_entry_provider OPTIONAL
+      iv_entity_name TYPE string
+      iv_entity_set_name TYPE string
+      iv_source_name TYPE string
+      it_key_tab TYPE /iwbep/t_mgw_name_value_pair
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_u OPTIONAL
+      it_navigation_path TYPE /iwbep/t_mgw_navigation_path
+      io_data_provider TYPE REF TO /iwbep/if_mgw_entry_provider OPTIONAL
       EXPORTING
-      !er_entity TYPE zcl_zsegw_mpc=>ts_zsegw
+      er_entity TYPE zcl_zsegw_mpc=>ts_zsegw
       RAISING
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
