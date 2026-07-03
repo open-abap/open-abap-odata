@@ -25,6 +25,10 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 ENDCLASS.
 
 CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
+  METHOD /iwbep/if_mgw_appl_srv_runtime~create_stream.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_appl_srv_runtime~execute_action.
     ASSERT 1 = 'todo'.
   ENDMETHOD.

@@ -6,7 +6,7 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
            END OF ty_data.
 
     CLASS-METHODS handle
-      IMPORTING iv_path TYPE string
+      IMPORTING iv_path        TYPE string
       RETURNING VALUE(rs_data) TYPE ty_data
       RAISING cx_static_check.
 
@@ -27,7 +27,7 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
         /iwbep/cx_mgw_tech_exception.
 
     CLASS-METHODS map_boolean
-      IMPORTING iv_boolean TYPE abap_bool
+      IMPORTING iv_boolean       TYPE abap_bool
       RETURNING VALUE(rv_string) TYPE string.
 ENDCLASS.
 

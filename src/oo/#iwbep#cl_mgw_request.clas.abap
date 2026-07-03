@@ -16,6 +16,13 @@ CLASS /iwbep/cl_mgw_request DEFINITION PUBLIC.
 ENDCLASS.
 
 CLASS /iwbep/cl_mgw_request IMPLEMENTATION.
+  METHOD /iwbep/if_mgw_req_entity_u~get_converted_keys.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_req_entity_c~get_source_entity_set_name.
+    RETURN.
+  ENDMETHOD.
 
   METHOD /iwbep/if_mgw_req_entityset~get_orderby.
     RETURN.
