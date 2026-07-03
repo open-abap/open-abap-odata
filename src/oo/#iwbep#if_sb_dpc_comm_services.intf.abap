@@ -13,13 +13,13 @@ INTERFACE /iwbep/if_sb_dpc_comm_services PUBLIC.
 
   METHODS log_message
     IMPORTING
-      iv_msg_type TYPE symsgty
-      iv_msg_id TYPE symsgid OPTIONAL
+      iv_msg_type   TYPE symsgty
+      iv_msg_id     TYPE symsgid OPTIONAL
       iv_msg_number TYPE symsgno OPTIONAL
-      iv_msg_v1 TYPE any OPTIONAL
-      iv_msg_v2 TYPE any OPTIONAL
-      iv_msg_v3 TYPE any OPTIONAL
-      iv_msg_v4 TYPE any OPTIONAL.
+      iv_msg_v1     TYPE any OPTIONAL
+      iv_msg_v2     TYPE any OPTIONAL
+      iv_msg_v3     TYPE any OPTIONAL
+      iv_msg_v4     TYPE any OPTIONAL.
 
   METHODS rfc_exception_handling
     IMPORTING

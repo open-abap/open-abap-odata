@@ -2,11 +2,11 @@ CLASS /iwbep/cl_sb_gen_dpc_rt_util DEFINITION PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS rfc_save_log
       IMPORTING
-        is_return      TYPE any OPTIONAL
-        it_return      TYPE ANY TABLE OPTIONAL
-        iv_entity_type TYPE string OPTIONAL
-        it_key_tab     TYPE any OPTIONAL
-        io_logger      TYPE REF TO /iwbep/cl_cos_logger
+        is_return            TYPE any OPTIONAL
+        it_return            TYPE ANY TABLE OPTIONAL
+        iv_entity_type       TYPE string OPTIONAL
+        it_key_tab           TYPE any OPTIONAL
+        io_logger            TYPE REF TO /iwbep/cl_cos_logger
         io_message_container TYPE REF TO /iwbep/if_message_container
       RAISING
         /iwbep/cx_mgw_busi_exception.
