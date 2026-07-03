@@ -192,4 +192,20 @@ INTERFACE /iwbep/if_mgw_appl_srv_runtime PUBLIC.
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
 
+  METHODS create_stream
+    IMPORTING
+      iv_entity_name TYPE string OPTIONAL
+      iv_entity_set_name TYPE string OPTIONAL
+      iv_source_name TYPE string OPTIONAL
+      is_media_resource TYPE ty_s_media_resource
+      it_key_tab TYPE /iwbep/t_mgw_name_value_pair OPTIONAL
+      it_navigation_path TYPE /iwbep/t_mgw_navigation_path OPTIONAL
+      iv_slug TYPE string
+      io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_entity_c OPTIONAL
+    EXPORTING
+      er_entity TYPE REF TO data
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
 ENDINTERFACE.

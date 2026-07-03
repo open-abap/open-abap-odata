@@ -15,6 +15,7 @@
     "errorNamespace": "."
   },
   "rules": {
+    "no_exclamation_escape": true,
     "7bit_ascii": true,
     "abapdoc": false,
     "align_parameters": true,
