@@ -7,6 +7,7 @@ INTERFACE /iwbep/if_mgw_odata_property PUBLIC.
     FOR /iwbep/if_mgw_odata_item~set_label_from_text_element.
 
   METHODS set_type_edm_string.
+  METHODS set_type_edm_byte.
 
   METHODS set_maxlength
     IMPORTING

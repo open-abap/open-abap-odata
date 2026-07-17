@@ -36,4 +36,10 @@ INTERFACE /iwbep/if_mgw_req_entityset PUBLIC.
     RETURNING
       VALUE(rv_osql_where_clause) TYPE string.
 
+  METHODS get_osql_where_clause
+    RETURNING
+      VALUE(rv_osql_where_clause) TYPE string
+    RAISING
+      /iwbep/cx_mgw_busi_exception.
+
 ENDINTERFACE.
