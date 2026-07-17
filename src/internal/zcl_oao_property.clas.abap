@@ -13,6 +13,9 @@ CLASS zcl_oao_property DEFINITION PUBLIC.
 ENDCLASS.
 
 CLASS zcl_oao_property IMPLEMENTATION.
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_byte.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_property~set_type_edm_time.
     ASSERT 1 = 'todo'.

@@ -16,6 +16,22 @@ CLASS /iwbep/cl_mgw_request DEFINITION PUBLIC.
 ENDCLASS.
 
 CLASS /iwbep/cl_mgw_request IMPLEMENTATION.
+  METHOD /iwbep/if_mgw_req_entity_d~get_entity_type_name.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_req_entity_d~get_converted_keys.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_req_entityset~get_osql_where_clause.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_req_entity~get_source_entity_set_name.
+    RETURN.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_req_entity_u~get_converted_keys.
     RETURN.
   ENDMETHOD.

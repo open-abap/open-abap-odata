@@ -10,6 +10,9 @@ CLASS zcl_oao_request_context DEFINITION PUBLIC.
 ENDCLASS.
 
 CLASS zcl_oao_request_context IMPLEMENTATION.
+  METHOD /iwbep/if_mgw_req_entityset~get_osql_where_clause.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
 
   METHOD /iwbep/if_mgw_req_entityset~get_orderby.
     ASSERT 1 = 'todo'.
