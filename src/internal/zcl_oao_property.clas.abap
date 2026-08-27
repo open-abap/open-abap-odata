@@ -25,6 +25,10 @@ CLASS zcl_oao_property IMPLEMENTATION.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_odata_property~set_as_content_type.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_property~set_type_edm_int16.
     ASSERT 1 = 'todo'.
   ENDMETHOD.

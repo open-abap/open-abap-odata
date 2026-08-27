@@ -59,4 +59,6 @@ INTERFACE /iwbep/if_mgw_odata_property PUBLIC.
 
   METHODS disable_conversion.
 
+  METHODS set_as_content_type.
+
 ENDINTERFACE.
