@@ -12,4 +12,12 @@ INTERFACE /iwbep/if_mgw_req_entity PUBLIC.
     RETURNING
       VALUE(rv_entity_set) TYPE /iwbep/mgw_tech_name.
 
+  METHODS get_converted_keys
+    EXPORTING
+      es_key_values TYPE data.
+
+  METHODS get_converted_source_keys
+    EXPORTING
+      es_key_values TYPE data.
+
 ENDINTERFACE.
