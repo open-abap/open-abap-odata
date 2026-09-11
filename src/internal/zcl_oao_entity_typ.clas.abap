@@ -8,12 +8,19 @@ CLASS zcl_oao_entity_typ DEFINITION PUBLIC.
            END OF ty_entity_set.
     TYPES ty_entity_sets TYPE STANDARD TABLE OF ty_entity_set WITH DEFAULT KEY.
 
+    TYPES ty_nav_props TYPE STANDARD TABLE OF REF TO zcl_oao_nav_prop WITH DEFAULT KEY.
+
     METHODS get_entity_sets
       RETURNING
         VALUE(rt_entity_sets) TYPE ty_entity_sets.
+
+    METHODS get_navigation_properties
+      RETURNING
+        VALUE(rt_nav_props) TYPE ty_nav_props.
   PRIVATE SECTION.
     DATA mt_properties  TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
     DATA mt_entity_sets TYPE ty_entity_sets.
+    DATA mt_nav_props   TYPE ty_nav_props.
 ENDCLASS.
 
 CLASS zcl_oao_entity_typ IMPLEMENTATION.
@@ -23,7 +30,18 @@ CLASS zcl_oao_entity_typ IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~create_navigation_property.
-    ASSERT 1 = 'todo'.
+    DATA lo_nav TYPE REF TO zcl_oao_nav_prop.
+
+    CREATE OBJECT lo_nav.
+    lo_nav->mv_name           = iv_property_name.
+    lo_nav->mv_association    = iv_association_name.
+    lo_nav->mv_abap_fieldname = iv_abap_fieldname.
+    APPEND lo_nav TO mt_nav_props.
+    ro_navigation_property = lo_nav.
+  ENDMETHOD.
+
+  METHOD get_navigation_properties.
+    rt_nav_props = mt_nav_props.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~create_entity_set.

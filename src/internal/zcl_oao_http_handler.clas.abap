@@ -42,6 +42,19 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
     CLASS-METHODS map_boolean
       IMPORTING iv_boolean       TYPE abap_bool
       RETURNING VALUE(rv_string) TYPE string.
+
+    CLASS-METHODS multiplicity
+      IMPORTING
+        iv_card          TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_cardinality
+      RETURNING
+        VALUE(rv_string) TYPE string.
+
+    CLASS-METHODS association_xml
+      IMPORTING
+        io_association TYPE REF TO zcl_oao_association
+        iv_namespace   TYPE string
+      RETURNING
+        VALUE(rv_xml)  TYPE string.
 ENDCLASS.
 
 CLASS zcl_oao_http_handler IMPLEMENTATION.
@@ -79,6 +92,48 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       WHEN OTHERS.
         ASSERT 1 = 2.
     ENDCASE.
+  ENDMETHOD.
+
+  METHOD multiplicity.
+    CASE iv_card.
+      WHEN '1'.
+        rv_string = '1'.
+      WHEN '0' OR 'O'.
+        rv_string = '0..1'.
+      WHEN OTHERS.
+* 'N', 'M', '*'
+        rv_string = '*'.
+    ENDCASE.
+  ENDMETHOD.
+
+  METHOD association_xml.
+    DATA ls_pair TYPE zcl_oao_ref_constraint=>ty_pair.
+    DATA lv_principal_role TYPE string.
+    DATA lv_dependent_role TYPE string.
+
+    rv_xml =
+      |      <Association Name="{ io_association->mv_name }" sap:content-version="1">\n| &&
+      |        <End Type="{ iv_namespace }.{ io_association->mv_left_type }" Multiplicity="{ multiplicity( io_association->mv_left_card ) }" Role="FromRole_{ io_association->mv_name }"/>\n| &&
+      |        <End Type="{ iv_namespace }.{ io_association->mv_right_type }" Multiplicity="{ multiplicity( io_association->mv_right_card ) }" Role="ToRole_{ io_association->mv_name }"/>\n|.
+    IF io_association->mo_ref_constraint IS BOUND AND io_association->mo_ref_constraint->mt_pairs IS NOT INITIAL.
+      IF io_association->mo_ref_constraint->mv_principal_is_left = abap_true.
+        lv_principal_role = |FromRole_{ io_association->mv_name }|.
+        lv_dependent_role = |ToRole_{ io_association->mv_name }|.
+      ELSE.
+        lv_principal_role = |ToRole_{ io_association->mv_name }|.
+        lv_dependent_role = |FromRole_{ io_association->mv_name }|.
+      ENDIF.
+      rv_xml = rv_xml && |        <ReferentialConstraint>\n          <Principal Role="{ lv_principal_role }">\n|.
+      LOOP AT io_association->mo_ref_constraint->mt_pairs INTO ls_pair.
+        rv_xml = rv_xml && |            <PropertyRef Name="{ ls_pair-principal }"/>\n|.
+      ENDLOOP.
+      rv_xml = rv_xml && |          </Principal>\n          <Dependent Role="{ lv_dependent_role }">\n|.
+      LOOP AT io_association->mo_ref_constraint->mt_pairs INTO ls_pair.
+        rv_xml = rv_xml && |            <PropertyRef Name="{ ls_pair-dependent }"/>\n|.
+      ENDLOOP.
+      rv_xml = rv_xml && |          </Dependent>\n        </ReferentialConstraint>\n|.
+    ENDIF.
+    rv_xml = rv_xml && |      </Association>\n|.
   ENDMETHOD.
 
   METHOD property_xml.
@@ -193,12 +248,22 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lt_entity_sets  TYPE zcl_oao_entity_typ=>ty_entity_sets.
     DATA ls_entity_set   LIKE LINE OF lt_entity_sets.
     DATA lv_sets_xml     TYPE string.
+    DATA lt_nav_props    TYPE zcl_oao_entity_typ=>ty_nav_props.
+    DATA lo_nav          TYPE REF TO zcl_oao_nav_prop.
+    DATA lt_associations TYPE zcl_oao_model=>ty_associations.
+    DATA lo_association  TYPE REF TO zcl_oao_association.
+    DATA lt_assoc_sets   TYPE zcl_oao_model=>ty_assoc_sets.
+    DATA lo_assoc_set    TYPE REF TO zcl_oao_assoc_set.
+    DATA lv_from_role    TYPE string.
+    DATA lv_to_role      TYPE string.
 
     lo_mpc = zcl_oao_registry=>create_mpc( iv_service ).
     lo_mpc->define( ).
     lo_model ?= lo_mpc->model.
     lo_model->/iwbep/if_mgw_odata_model~get_schema_namespace( IMPORTING ev_namespace = lv_namespace ).
     lt_entity_types = lo_model->get_entity_type_names( ).
+    lt_associations = lo_model->get_associations( ).
+    lt_assoc_sets   = lo_model->get_association_sets( ).
 
     rv_xml =
       |<?xml version="1.0" encoding="utf-8"?>\n| &&
@@ -226,6 +291,22 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
         rv_xml = rv_xml && property_xml( iv_name     = ls_property-name
                                          io_property = lo_property ).
       ENDLOOP.
+
+      lt_nav_props = lo_entity->get_navigation_properties( ).
+      LOOP AT lt_nav_props INTO lo_nav.
+* the navigation starts on the side of the association this type is on
+        lv_from_role = |FromRole_{ lo_nav->mv_association }|.
+        lv_to_role   = |ToRole_{ lo_nav->mv_association }|.
+        LOOP AT lt_associations INTO lo_association.
+          IF lo_association->mv_name = lo_nav->mv_association AND lo_association->mv_right_type = lv_entity_type
+              AND lo_association->mv_left_type <> lv_entity_type.
+            lv_from_role = |ToRole_{ lo_nav->mv_association }|.
+            lv_to_role   = |FromRole_{ lo_nav->mv_association }|.
+          ENDIF.
+        ENDLOOP.
+        rv_xml = rv_xml &&
+          |        <NavigationProperty Name="{ lo_nav->mv_name }" Relationship="{ lv_namespace }.{ lo_nav->mv_association }" FromRole="{ lv_from_role }" ToRole="{ lv_to_role }"/>\n|.
+      ENDLOOP.
       rv_xml = rv_xml && |      </EntityType>\n|.
 
       lt_entity_sets = lo_entity->get_entity_sets( ).
@@ -237,6 +318,19 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
             map_boolean( ls_entity_set-entity_set->mv_deletable ) }" sap:pageable="{
             map_boolean( ls_entity_set-entity_set->mv_pageable ) }" sap:content-version="1"/>\n|.
       ENDLOOP.
+    ENDLOOP.
+
+    LOOP AT lt_associations INTO lo_association.
+      rv_xml = rv_xml && association_xml( io_association = lo_association
+                                          iv_namespace   = lv_namespace ).
+    ENDLOOP.
+
+    LOOP AT lt_assoc_sets INTO lo_assoc_set.
+      lv_sets_xml = lv_sets_xml &&
+        |        <AssociationSet Name="{ lo_assoc_set->mv_name }" Association="{ lv_namespace }.{ lo_assoc_set->mv_association }" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">\n| &&
+        |          <End EntitySet="{ lo_assoc_set->mv_left_set }" Role="FromRole_{ lo_assoc_set->mv_association }"/>\n| &&
+        |          <End EntitySet="{ lo_assoc_set->mv_right_set }" Role="ToRole_{ lo_assoc_set->mv_association }"/>\n| &&
+        |        </AssociationSet>\n|.
     ENDLOOP.
 
     rv_xml = rv_xml &&

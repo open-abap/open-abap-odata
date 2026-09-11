@@ -6,6 +6,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS data_via_registry FOR TESTING RAISING cx_static_check.
     METHODS unknown_service FOR TESTING RAISING cx_static_check.
     METHODS edm_types FOR TESTING RAISING cx_static_check.
+    METHODS associations FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
@@ -104,6 +105,59 @@ CLASS ltcl_test IMPLEMENTATION.
                                         exp = 'Edm.Byte' ).
     cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_content_type
                                         exp = abap_true ).
+  ENDMETHOD.
+
+  METHOD associations.
+    DATA lo_model    TYPE REF TO zcl_oao_model.
+    DATA lo_intf     TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA lo_head     TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_item     TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_assoc    TYPE REF TO /iwbep/if_mgw_odata_assoc.
+    DATA lo_ref      TYPE REF TO /iwbep/if_mgw_odata_ref_constr.
+    DATA lo_oao_head TYPE REF TO zcl_oao_entity_typ.
+    DATA lt_navs     TYPE zcl_oao_entity_typ=>ty_nav_props.
+    DATA lo_nav      TYPE REF TO zcl_oao_nav_prop.
+    DATA lt_assocs   TYPE zcl_oao_model=>ty_associations.
+    DATA lo_oao_asc  TYPE REF TO zcl_oao_association.
+
+    CREATE OBJECT lo_model.
+    lo_intf = lo_model.
+    lo_head = lo_intf->create_entity_type( 'Head' ).
+    lo_item = lo_intf->create_entity_type( 'Item' ).
+    lo_assoc = lo_intf->create_association( iv_association_name = 'HeadToItems'
+                                            iv_left_type        = 'Head'
+                                            iv_right_type       = 'Item'
+                                            iv_left_card        = '1'
+                                            iv_right_card       = 'N'
+                                            iv_def_assoc_set    = abap_false ).
+    lo_ref = lo_assoc->create_ref_constraint( ).
+    lo_ref->add_property( iv_principal_property = 'Id'
+                          iv_dependent_property = 'HeadId' ).
+    lo_intf->create_association_set( iv_association_set_name  = 'HeadToItemsSet'
+                                     iv_left_entity_set_name  = 'HeadSet'
+                                     iv_right_entity_set_name = 'ItemSet'
+                                     iv_association_name      = 'HeadToItems' ).
+    lo_head->create_navigation_property( iv_property_name    = 'to_Items'
+                                         iv_association_name = 'HeadToItems' ).
+
+    lo_oao_head ?= lo_head.
+    lt_navs = lo_oao_head->get_navigation_properties( ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_navs )
+                                        exp = 1 ).
+    READ TABLE lt_navs INDEX 1 INTO lo_nav.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = lo_nav->mv_association
+                                        exp = 'HeadToItems' ).
+
+    lt_assocs = lo_model->get_associations( ).
+    READ TABLE lt_assocs INDEX 1 INTO lo_oao_asc.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao_asc->mv_right_card
+                                        exp = 'N' ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lo_oao_asc->mo_ref_constraint->mt_pairs )
+                                        exp = 1 ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lo_model->get_association_sets( ) )
+                                        exp = 1 ).
   ENDMETHOD.
 
   METHOD unknown_service.
