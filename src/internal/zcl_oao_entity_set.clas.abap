@@ -1,6 +1,9 @@
 CLASS zcl_oao_entity_set DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_entity_set.
+    INTERFACES /iwbep/if_mgw_odata_annotatabl.
+
+    DATA mo_annotation TYPE REF TO zcl_oao_annotation.
 
     DATA mv_creatable       TYPE abap_bool.
     DATA mv_updatable       TYPE abap_bool.
@@ -44,6 +47,13 @@ CLASS zcl_oao_entity_set IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_odata_entity_set~set_filter_required.
     mv_filter_required = iv_req_filter.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_annotatabl~create_annotation.
+    IF mo_annotation IS NOT BOUND.
+      CREATE OBJECT mo_annotation.
+    ENDIF.
+    ro_annotation = mo_annotation.
   ENDMETHOD.
 
 ENDCLASS.

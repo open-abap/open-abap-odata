@@ -63,6 +63,13 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
       RETURNING
         VALUE(rv_xml) TYPE string.
 
+    CLASS-METHODS custom_annotations_xml
+      IMPORTING
+        io_annotation TYPE REF TO zcl_oao_annotation
+        it_builtin    TYPE string_table
+      RETURNING
+        VALUE(rv_xml) TYPE string.
+
 ENDCLASS.
 
 CLASS zcl_oao_http_handler IMPLEMENTATION.
@@ -189,16 +196,45 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD property_xml.
-    DATA lv_facets TYPE string.
-    DATA lv_label  TYPE string.
+  METHOD custom_annotations_xml.
+    DATA lt_annotations TYPE zcl_oao_annotation=>ty_annotations.
+    DATA ls_annotation  LIKE LINE OF lt_annotations.
+    DATA lv_key         TYPE string.
 
-* label: the text pool is not available off-system, the ABAP field name is
-* what SEGW puts into the text element by default
-    lv_label = io_property->mv_abap_fieldname.
+    IF io_annotation IS NOT BOUND.
+      RETURN.
+    ENDIF.
+    lt_annotations = io_annotation->get_all( ).
+    LOOP AT lt_annotations INTO ls_annotation.
+      lv_key = ls_annotation-key.
+      READ TABLE it_builtin WITH KEY table_line = lv_key TRANSPORTING NO FIELDS.
+      IF sy-subrc = 0.
+        CONTINUE.
+      ENDIF.
+      rv_xml = rv_xml && | sap:{ lv_key }="{ ls_annotation-value }"|.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD property_xml.
+    DATA lv_facets  TYPE string.
+    DATA lv_label   TYPE string.
+    DATA lt_builtin TYPE string_table.
+
+* label: an explicit one (CDS @EndUserText.label via SADL), else the ABAP
+* field name, which is what SEGW puts into the text element by default
+    lv_label = io_property->mv_label.
+    IF lv_label IS INITIAL.
+      lv_label = io_property->mv_abap_fieldname.
+    ENDIF.
     IF lv_label IS INITIAL.
       lv_label = iv_name.
     ENDIF.
+    APPEND 'unicode' TO lt_builtin.
+    APPEND 'label' TO lt_builtin.
+    APPEND 'creatable' TO lt_builtin.
+    APPEND 'updatable' TO lt_builtin.
+    APPEND 'sortable' TO lt_builtin.
+    APPEND 'filterable' TO lt_builtin.
 
     CASE io_property->mv_edm_type.
       WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-string.
@@ -221,7 +257,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
         map_boolean( io_property->mv_creatable ) }" sap:updatable="{
         map_boolean( io_property->mv_updatable ) }" sap:sortable="{
         map_boolean( io_property->mv_sortable ) }" sap:filterable="{
-        map_boolean( io_property->mv_filterable ) }"/>\n|.
+        map_boolean( io_property->mv_filterable ) }"{ custom_annotations_xml( io_annotation = io_property->mo_annotation
+                                                                              it_builtin    = lt_builtin ) }/>\n|.
   ENDMETHOD.
 
   METHOD data.
@@ -311,6 +348,9 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lv_to_role      TYPE string.
     DATA lt_actions      TYPE zcl_oao_model=>ty_actions.
     DATA lo_action       TYPE REF TO zcl_oao_action.
+    DATA lt_set_builtin  TYPE string_table.
+    DATA lt_vocabulary   TYPE string_table.
+    DATA lv_vocabulary   TYPE string.
 
     lo_mpc = zcl_oao_registry=>create_mpc( iv_service ).
     lo_mpc->define( ).
@@ -320,6 +360,12 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     lt_associations = lo_model->get_associations( ).
     lt_assoc_sets   = lo_model->get_association_sets( ).
     lt_actions      = lo_model->get_actions( ).
+    lt_vocabulary   = lo_model->get_vocabulary_xml( ).
+    APPEND 'creatable' TO lt_set_builtin.
+    APPEND 'updatable' TO lt_set_builtin.
+    APPEND 'deletable' TO lt_set_builtin.
+    APPEND 'pageable' TO lt_set_builtin.
+    APPEND 'content-version' TO lt_set_builtin.
 
     rv_xml =
       |<?xml version="1.0" encoding="utf-8"?>\n| &&
@@ -372,7 +418,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
             map_boolean( ls_entity_set-entity_set->mv_creatable ) }" sap:updatable="{
             map_boolean( ls_entity_set-entity_set->mv_updatable ) }" sap:deletable="{
             map_boolean( ls_entity_set-entity_set->mv_deletable ) }" sap:pageable="{
-            map_boolean( ls_entity_set-entity_set->mv_pageable ) }" sap:content-version="1"/>\n|.
+            map_boolean( ls_entity_set-entity_set->mv_pageable ) }"{ custom_annotations_xml( io_annotation = ls_entity_set-entity_set->mo_annotation
+                                                                                             it_builtin    = lt_set_builtin ) } sap:content-version="1"/>\n|.
       ENDLOOP.
     ENDLOOP.
 
@@ -397,7 +444,11 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     rv_xml = rv_xml &&
       |      <EntityContainer Name="{ lv_namespace }_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="json">\n| &&
       lv_sets_xml &&
-      |      </EntityContainer>\n| &&
+      |      </EntityContainer>\n|.
+    LOOP AT lt_vocabulary INTO lv_vocabulary.
+      rv_xml = rv_xml && lv_vocabulary.
+    ENDLOOP.
+    rv_xml = rv_xml &&
       |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="{ gc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&
       |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="{ gc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&
       |    </Schema>\n| &&

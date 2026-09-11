@@ -17,6 +17,8 @@ CLASS zcl_oao_property DEFINITION PUBLIC.
     DATA mv_content_type   TYPE abap_bool.
     DATA mv_text_symbol    TYPE textpoolky.
     DATA mv_text_container TYPE string.
+    DATA mv_label          TYPE string.
+    DATA mo_annotation     TYPE REF TO zcl_oao_annotation.
 ENDCLASS.
 
 CLASS zcl_oao_property IMPLEMENTATION.
@@ -102,7 +104,10 @@ CLASS zcl_oao_property IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_annotatabl~create_annotation.
-    CREATE OBJECT ro_annotation TYPE zcl_oao_annotation.
+    IF mo_annotation IS NOT BOUND.
+      CREATE OBJECT mo_annotation.
+    ENDIF.
+    ro_annotation = mo_annotation.
   ENDMETHOD.
 
 ENDCLASS.
