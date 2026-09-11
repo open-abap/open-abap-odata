@@ -55,6 +55,14 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
         iv_namespace   TYPE string
       RETURNING
         VALUE(rv_xml)  TYPE string.
+
+    CLASS-METHODS function_import_xml
+      IMPORTING
+        io_action     TYPE REF TO zcl_oao_action
+        iv_namespace  TYPE string
+      RETURNING
+        VALUE(rv_xml) TYPE string.
+
 ENDCLASS.
 
 CLASS zcl_oao_http_handler IMPLEMENTATION.
@@ -134,6 +142,51 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       rv_xml = rv_xml && |          </Dependent>\n        </ReferentialConstraint>\n|.
     ENDIF.
     rv_xml = rv_xml && |      </Association>\n|.
+  ENDMETHOD.
+
+  METHOD function_import_xml.
+    DATA lo_parameter TYPE REF TO zcl_oao_parameter.
+    DATA lv_return    TYPE string.
+    DATA lv_facets    TYPE string.
+
+    IF io_action->mv_return_entity_type IS NOT INITIAL.
+      lv_return = |{ iv_namespace }.{ io_action->mv_return_entity_type }|.
+    ELSEIF io_action->mv_return_complex_type IS NOT INITIAL.
+      lv_return = |{ iv_namespace }.{ io_action->mv_return_complex_type }|.
+    ELSE.
+      lv_return = ''.
+    ENDIF.
+    IF lv_return IS NOT INITIAL AND io_action->mv_return_multiplicity <> '1' AND io_action->mv_return_multiplicity <> '0'.
+      lv_return = |Collection({ lv_return })|.
+    ENDIF.
+    rv_xml = rv_xml && |        <FunctionImport Name="{ io_action->mv_name }"|.
+    IF lv_return IS NOT INITIAL.
+      rv_xml = rv_xml && | ReturnType="{ lv_return }"|.
+    ENDIF.
+    IF io_action->mv_return_entity_set IS NOT INITIAL.
+      rv_xml = rv_xml && | EntitySet="{ io_action->mv_return_entity_set }"|.
+    ENDIF.
+    rv_xml = rv_xml && | m:HttpMethod="{ io_action->mv_http_method }"|.
+    IF io_action->mv_action_for IS NOT INITIAL.
+      rv_xml = rv_xml && | sap:action-for="{ iv_namespace }.{ io_action->mv_action_for }"|.
+    ENDIF.
+    IF io_action->mt_parameters IS INITIAL.
+      rv_xml = rv_xml && |/>\n|.
+    ELSE.
+      rv_xml = rv_xml && |>\n|.
+      LOOP AT io_action->mt_parameters INTO lo_parameter.
+        IF lo_parameter->mv_edm_type IS INITIAL.
+          lo_parameter->mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-string.
+        ENDIF.
+        lv_facets = ''.
+        IF lo_parameter->mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-string AND lo_parameter->mv_maxlength > 0.
+          lv_facets = | MaxLength="{ lo_parameter->mv_maxlength }"|.
+        ENDIF.
+        rv_xml = rv_xml &&
+          |          <Parameter Name="{ lo_parameter->mv_name }" Type="{ lo_parameter->mv_edm_type }" Mode="{ lo_parameter->mv_mode }"{ lv_facets }/>\n|.
+      ENDLOOP.
+      rv_xml = rv_xml && |        </FunctionImport>\n|.
+    ENDIF.
   ENDMETHOD.
 
   METHOD property_xml.
@@ -256,6 +309,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lo_assoc_set    TYPE REF TO zcl_oao_assoc_set.
     DATA lv_from_role    TYPE string.
     DATA lv_to_role      TYPE string.
+    DATA lt_actions      TYPE zcl_oao_model=>ty_actions.
+    DATA lo_action       TYPE REF TO zcl_oao_action.
 
     lo_mpc = zcl_oao_registry=>create_mpc( iv_service ).
     lo_mpc->define( ).
@@ -264,6 +319,7 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     lt_entity_types = lo_model->get_entity_type_names( ).
     lt_associations = lo_model->get_associations( ).
     lt_assoc_sets   = lo_model->get_association_sets( ).
+    lt_actions      = lo_model->get_actions( ).
 
     rv_xml =
       |<?xml version="1.0" encoding="utf-8"?>\n| &&
@@ -323,6 +379,11 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     LOOP AT lt_associations INTO lo_association.
       rv_xml = rv_xml && association_xml( io_association = lo_association
                                           iv_namespace   = lv_namespace ).
+    ENDLOOP.
+
+    LOOP AT lt_actions INTO lo_action.
+      lv_sets_xml = lv_sets_xml && function_import_xml( io_action    = lo_action
+                                                        iv_namespace = lv_namespace ).
     ENDLOOP.
 
     LOOP AT lt_assoc_sets INTO lo_assoc_set.

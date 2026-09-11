@@ -7,6 +7,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS unknown_service FOR TESTING RAISING cx_static_check.
     METHODS edm_types FOR TESTING RAISING cx_static_check.
     METHODS associations FOR TESTING RAISING cx_static_check.
+    METHODS actions FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
@@ -158,6 +159,44 @@ CLASS ltcl_test IMPLEMENTATION.
                                         exp = 1 ).
     cl_abap_unit_assert=>assert_equals( act = lines( lo_model->get_association_sets( ) )
                                         exp = 1 ).
+  ENDMETHOD.
+
+  METHOD actions.
+    DATA lo_model     TYPE REF TO zcl_oao_model.
+    DATA lo_intf      TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA lo_action    TYPE REF TO /iwbep/if_mgw_odata_action.
+    DATA lo_parameter TYPE REF TO /iwbep/if_mgw_odata_parameter.
+    DATA lt_actions   TYPE zcl_oao_model=>ty_actions.
+    DATA lo_oao       TYPE REF TO zcl_oao_action.
+    DATA lo_oao_par   TYPE REF TO zcl_oao_parameter.
+
+    CREATE OBJECT lo_model.
+    lo_intf = lo_model.
+    lo_action = lo_intf->create_action( 'Cancel' ).
+    lo_action->set_return_entity_type( 'Head' ).
+    lo_action->set_return_entity_set( 'HeadSet' ).
+    lo_action->set_http_method( 'POST' ).
+    lo_action->set_action_for( 'Head' ).
+    lo_parameter = lo_action->create_input_parameter( iv_parameter_name = 'Id'
+                                                      iv_abap_fieldname = 'ID' ).
+    lo_parameter->set_type_edm_string( ).
+    lo_parameter->set_maxlength( 8 ).
+
+    lt_actions = lo_model->get_actions( ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_actions )
+                                        exp = 1 ).
+    READ TABLE lt_actions INDEX 1 INTO lo_oao.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_http_method
+                                        exp = 'POST' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_return_entity_set
+                                        exp = 'HeadSet' ).
+    READ TABLE lo_oao->mt_parameters INDEX 1 INTO lo_oao_par.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao_par->mv_edm_type
+                                        exp = 'Edm.String' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao_par->mv_abap_fieldname
+                                        exp = 'ID' ).
   ENDMETHOD.
 
   METHOD unknown_service.
