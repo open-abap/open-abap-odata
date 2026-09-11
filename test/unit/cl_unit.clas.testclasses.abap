@@ -5,6 +5,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS metadata_via_registry FOR TESTING RAISING cx_static_check.
     METHODS data_via_registry FOR TESTING RAISING cx_static_check.
     METHODS unknown_service FOR TESTING RAISING cx_static_check.
+    METHODS edm_types FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
@@ -46,6 +47,63 @@ CLASS ltcl_test IMPLEMENTATION.
       act = ls_data-content_type
       exp = 'application/json' ).
     cl_abap_unit_assert=>assert_true( boolc( ls_data-data CS '"Something1" : "HELLO"' ) ).
+  ENDMETHOD.
+
+  METHOD edm_types.
+    DATA lo_model    TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA lo_entity   TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_property TYPE REF TO /iwbep/if_mgw_odata_property.
+    DATA lo_oao      TYPE REF TO zcl_oao_property.
+    DATA lv_xml      TYPE string.
+
+    CREATE OBJECT lo_model TYPE zcl_oao_model.
+    lo_entity = lo_model->create_entity_type( 'Thing' ).
+
+    lo_property = lo_entity->create_property( iv_property_name  = 'Amount'
+                                              iv_abap_fieldname = 'AMOUNT' ).
+    lo_property->set_type_edm_decimal( ).
+    lo_property->set_precison( 3 ).
+    lo_property->set_maxlength( 16 ).
+    lo_property->set_conversion_exit( 'ALPHA' ).
+    lo_property->disable_conversion( ).
+
+    lo_oao ?= lo_entity->get_property( 'Amount' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_edm_type
+                                        exp = 'Edm.Decimal' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_precision
+                                        exp = 3 ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'Amount'
+                                                 io_property = lo_oao ).
+    FIND 'Type="Edm.Decimal"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    FIND 'Precision="16" Scale="3"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_conv_exit
+                                        exp = 'ALPHA' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_conversion
+                                        exp = abap_false ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_abap_fieldname
+                                        exp = 'AMOUNT' ).
+
+    lo_property = lo_entity->create_property( 'Count' ).
+    lo_property->set_type_edm_int32( ).
+    lo_property = lo_entity->create_property( 'Flag' ).
+    lo_property->set_type_edm_boolean( ).
+    lo_property = lo_entity->create_property( 'When' ).
+    lo_property->set_type_edm_datetime( ).
+    lo_property = lo_entity->create_property( 'At' ).
+    lo_property->set_type_edm_time( ).
+    lo_property = lo_entity->create_property( 'Small' ).
+    lo_property->set_type_edm_int16( ).
+    lo_property = lo_entity->create_property( 'Raw' ).
+    lo_property->set_type_edm_byte( ).
+    lo_property->set_as_content_type( ).
+
+    lo_oao ?= lo_entity->get_property( 'Raw' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_edm_type
+                                        exp = 'Edm.Byte' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_content_type
+                                        exp = abap_true ).
   ENDMETHOD.
 
   METHOD unknown_service.

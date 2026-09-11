@@ -10,6 +10,13 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
       RETURNING VALUE(rs_data) TYPE ty_data
       RAISING cx_static_check.
 
+    CLASS-METHODS property_xml
+      IMPORTING
+        iv_name       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+        io_property   TYPE REF TO zcl_oao_property
+      RETURNING
+        VALUE(rv_xml) TYPE string.
+
   PRIVATE SECTION.
     CONSTANTS gc_host TYPE string VALUE 'http://localhost:8080'.
 
@@ -72,6 +79,41 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       WHEN OTHERS.
         ASSERT 1 = 2.
     ENDCASE.
+  ENDMETHOD.
+
+  METHOD property_xml.
+    DATA lv_facets TYPE string.
+    DATA lv_label  TYPE string.
+
+* label: the text pool is not available off-system, the ABAP field name is
+* what SEGW puts into the text element by default
+    lv_label = io_property->mv_abap_fieldname.
+    IF lv_label IS INITIAL.
+      lv_label = iv_name.
+    ENDIF.
+
+    CASE io_property->mv_edm_type.
+      WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-string.
+        IF io_property->mv_maxlength > 0.
+          lv_facets = | MaxLength="{ io_property->mv_maxlength }"|.
+        ENDIF.
+      WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-decimal.
+* SEGW: set_maxlength = total digits, set_precison = decimal places
+        lv_facets = | Precision="{ io_property->mv_maxlength }" Scale="{ io_property->mv_precision }"|.
+      WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-datetime.
+        lv_facets = | Precision="{ io_property->mv_precision }"|.
+      WHEN OTHERS.
+        lv_facets = ``.
+    ENDCASE.
+
+    rv_xml =
+      |        <Property Name="{ iv_name }" Type="{ io_property->mv_edm_type }" Nullable="{
+        map_boolean( io_property->mv_nullable ) }"{ lv_facets } sap:unicode="false" sap:label="{
+        lv_label }" sap:creatable="{
+        map_boolean( io_property->mv_creatable ) }" sap:updatable="{
+        map_boolean( io_property->mv_updatable ) }" sap:sortable="{
+        map_boolean( io_property->mv_sortable ) }" sap:filterable="{
+        map_boolean( io_property->mv_filterable ) }"/>\n|.
   ENDMETHOD.
 
   METHOD data.
@@ -181,16 +223,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
       LOOP AT lt_properties INTO ls_property.
         lo_property ?= ls_property-property.
-* todo, label
-        rv_xml = rv_xml &&
-          |        <Property Name="{ ls_property-name }" Type="{
-            lo_property->mv_edm_type }" Nullable="{
-            map_boolean( lo_property->mv_nullable ) }" MaxLength="{
-            lo_property->mv_maxlength }" sap:unicode="false" sap:label="todo" sap:creatable="{
-            map_boolean( lo_property->mv_creatable ) }" sap:updatable="{
-            map_boolean( lo_property->mv_updatable ) }" sap:sortable="{
-            map_boolean( lo_property->mv_sortable ) }" sap:filterable="{
-            map_boolean( lo_property->mv_filterable ) }"/>\n|.
+        rv_xml = rv_xml && property_xml( iv_name     = ls_property-name
+                                         io_property = lo_property ).
       ENDLOOP.
       rv_xml = rv_xml && |      </EntityType>\n|.
 

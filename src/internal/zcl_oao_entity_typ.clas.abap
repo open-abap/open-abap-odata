@@ -50,9 +50,12 @@ CLASS zcl_oao_entity_typ IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~create_property.
-    DATA ls_row LIKE LINE OF mt_properties.
+    DATA ls_row      LIKE LINE OF mt_properties.
+    DATA lo_property TYPE REF TO zcl_oao_property.
 
-    CREATE OBJECT ro_property TYPE zcl_oao_property.
+    CREATE OBJECT lo_property.
+    lo_property->mv_abap_fieldname = iv_abap_fieldname.
+    ro_property = lo_property.
 
     ls_row-name = iv_property_name.
     ls_row-property = ro_property.
@@ -60,7 +63,13 @@ CLASS zcl_oao_entity_typ IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~get_property.
-    ASSERT 1 = 'todo'.
+    DATA ls_row LIKE LINE OF mt_properties.
+
+    READ TABLE mt_properties INTO ls_row WITH KEY name = iv_property_name.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_med_exception.
+    ENDIF.
+    ro_property = ls_row-property.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~get_properties.
