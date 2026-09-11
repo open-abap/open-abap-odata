@@ -33,12 +33,43 @@ CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
 
+* Default of the framework base: no own expansion, read the plain entity
+* (set) and leave the navigation properties to the framework. A DPC that
+* wants the fast path redefines these and lists what it filled in
+* et_expanded_tech_clauses.
   METHOD /iwbep/if_mgw_appl_srv_runtime~get_expanded_entity.
-    ASSERT 1 = 'todo'.
+    CLEAR et_expanded_tech_clauses.
+    /iwbep/if_mgw_appl_srv_runtime~get_entity(
+      EXPORTING
+        iv_entity_name          = iv_entity_name
+        iv_entity_set_name      = iv_entity_set_name
+        iv_source_name          = iv_source_name
+        it_key_tab              = it_key_tab
+        it_navigation_path      = it_navigation_path
+        io_tech_request_context = io_tech_request_context
+      IMPORTING
+        er_entity               = er_entity
+        es_response_context     = es_response_context ).
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_appl_srv_runtime~get_expanded_entityset.
-    ASSERT 1 = 'todo'.
+    CLEAR et_expanded_tech_clauses.
+    /iwbep/if_mgw_appl_srv_runtime~get_entityset(
+      EXPORTING
+        iv_entity_name           = iv_entity_name
+        iv_entity_set_name       = iv_entity_set_name
+        iv_source_name           = iv_source_name
+        it_filter_select_options = it_filter_select_options
+        it_order                 = it_order
+        is_paging                = is_paging
+        it_navigation_path       = it_navigation_path
+        it_key_tab               = it_key_tab
+        iv_filter_string         = iv_filter_string
+        iv_search_string         = iv_search_string
+        io_tech_request_context  = io_tech_request_context
+      IMPORTING
+        er_entityset             = er_entityset
+        es_response_context      = es_response_context ).
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_appl_srv_runtime~patch_entity.
