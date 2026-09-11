@@ -18,6 +18,10 @@ CLASS /iwbep/cx_mgw_busi_exception DEFINITION INHERITING FROM /iwbep/cx_mgw_base
                  attr4 TYPE scx_attrname VALUE '',
                END OF business_error_unlimited.
 
+    DATA message           TYPE string READ-ONLY.
+    DATA message_unlimited TYPE string READ-ONLY.
+    DATA message_container TYPE REF TO /iwbep/if_message_container READ-ONLY.
+
     METHODS constructor
       IMPORTING
         textid            LIKE if_t100_message=>t100key OPTIONAL
@@ -30,7 +34,16 @@ ENDCLASS.
 CLASS /iwbep/cx_mgw_busi_exception IMPLEMENTATION.
 
   METHOD constructor.
-    ASSERT 1 = 'todo'.
+    IF textid IS INITIAL.
+      super->constructor( textid   = business_error
+                          previous = previous ).
+    ELSE.
+      super->constructor( textid   = textid
+                          previous = previous ).
+    ENDIF.
+    me->message           = message.
+    me->message_unlimited = message_unlimited.
+    me->message_container = message_container.
   ENDMETHOD.
 
 ENDCLASS.

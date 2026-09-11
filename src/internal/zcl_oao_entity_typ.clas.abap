@@ -2,8 +2,18 @@ CLASS zcl_oao_entity_typ DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_entity_typ.
 
+    TYPES: BEGIN OF ty_entity_set,
+             name       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
+             entity_set TYPE REF TO zcl_oao_entity_set,
+           END OF ty_entity_set.
+    TYPES ty_entity_sets TYPE STANDARD TABLE OF ty_entity_set WITH DEFAULT KEY.
+
+    METHODS get_entity_sets
+      RETURNING
+        VALUE(rt_entity_sets) TYPE ty_entity_sets.
   PRIVATE SECTION.
-    DATA mt_properties TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
+    DATA mt_properties  TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
+    DATA mt_entity_sets TYPE ty_entity_sets.
 ENDCLASS.
 
 CLASS zcl_oao_entity_typ IMPLEMENTATION.
@@ -17,7 +27,17 @@ CLASS zcl_oao_entity_typ IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~create_entity_set.
+    DATA ls_row LIKE LINE OF mt_entity_sets.
+
     CREATE OBJECT ro_entity_set TYPE zcl_oao_entity_set.
+
+    ls_row-name = iv_entity_set_name.
+    ls_row-entity_set ?= ro_entity_set.
+    APPEND ls_row TO mt_entity_sets.
+  ENDMETHOD.
+
+  METHOD get_entity_sets.
+    rt_entity_sets = mt_entity_sets.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~set_is_media.

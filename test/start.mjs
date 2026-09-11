@@ -1,8 +1,16 @@
 import express from 'express';
 import {initializeABAP} from "../output/init.mjs";
 import {cl_express_icf_shim} from "../output/cl_express_icf_shim.clas.mjs";
+import {zcl_oao_registry} from "../output/zcl_oao_registry.clas.mjs";
 
 await initializeABAP();
+
+// service name -> MPC/DPC classes; on a real system this is the SEGW registration
+await zcl_oao_registry.register({
+  iv_service: new abap.types.String().set("ZSEGW_SRV"),
+  iv_mpc: new abap.types.String().set("ZCL_ZSEGW_MPC_EXT"),
+  iv_dpc: new abap.types.String().set("ZCL_ZSEGW_DPC_EXT"),
+});
 
 export function startServer(quiet) {
   const PORT = 3030;

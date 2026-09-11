@@ -10,7 +10,9 @@ ENDCLASS.
 CLASS /iwbep/cx_mgw_not_impl_exc IMPLEMENTATION.
 
   METHOD constructor.
-    super->constructor( previous = previous ).
+    super->constructor( textid   = textid
+                        previous = previous
+                        method   = method ).
   ENDMETHOD.
 
 ENDCLASS.
