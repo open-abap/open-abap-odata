@@ -17,6 +17,22 @@ INTERFACE /iwbep/if_mgw_odata_model PUBLIC.
     RAISING
       /iwbep/cx_mgw_med_exception.
 
+  METHODS create_complex_type
+    IMPORTING
+      iv_complex_type_name   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+    RETURNING
+      VALUE(ro_complex_type) TYPE REF TO /iwbep/if_mgw_odata_cmplx_type
+    RAISING
+      /iwbep/cx_mgw_med_exception.
+
+  METHODS get_complex_type
+    IMPORTING
+      iv_complex_type_name   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+    RETURNING
+      VALUE(ro_complex_type) TYPE REF TO /iwbep/if_mgw_odata_cmplx_type
+    RAISING
+      /iwbep/cx_mgw_med_exception.
+
   METHODS set_schema_namespace
     IMPORTING
       iv_namespace TYPE string.

@@ -28,6 +28,17 @@ INTERFACE /iwbep/if_mgw_odata_entity_typ PUBLIC.
     RAISING
       /iwbep/cx_mgw_med_exception.
 
+* the property is typed by a complex type of the model, the complex type is returned
+  METHODS create_complex_property
+    IMPORTING
+      iv_property_name       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_complex_type_name   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
+      iv_abap_fieldname      TYPE clike OPTIONAL
+    RETURNING
+      VALUE(ro_complex_type) TYPE REF TO /iwbep/if_mgw_odata_cmplx_type
+    RAISING
+      /iwbep/cx_mgw_med_exception.
+
   METHODS get_property
     IMPORTING
       iv_property_name   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name

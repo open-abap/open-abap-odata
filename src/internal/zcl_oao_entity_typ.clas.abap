@@ -17,6 +17,9 @@ CLASS zcl_oao_entity_typ DEFINITION PUBLIC.
     METHODS get_navigation_properties
       RETURNING
         VALUE(rt_nav_props) TYPE ty_nav_props.
+
+* the model this type belongs to, complex properties look their type up there
+    DATA mo_model TYPE REF TO /iwbep/if_mgw_odata_model.
   PRIVATE SECTION.
     DATA mv_structure_name TYPE string.
     DATA mt_properties  TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
@@ -103,6 +106,23 @@ CLASS zcl_oao_entity_typ IMPLEMENTATION.
     ls_row-name = iv_property_name.
     ls_row-property = ro_property.
     INSERT ls_row INTO TABLE mt_properties.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_entity_typ~create_complex_property.
+    DATA ls_row      LIKE LINE OF mt_properties.
+    DATA lo_property TYPE REF TO zcl_oao_property.
+
+    CREATE OBJECT lo_property.
+    lo_property->mv_abap_fieldname = iv_abap_fieldname.
+    lo_property->mv_complex_type   = iv_complex_type_name.
+
+    ls_row-name = iv_property_name.
+    ls_row-property = lo_property.
+    INSERT ls_row INTO TABLE mt_properties.
+
+    IF mo_model IS BOUND.
+      ro_complex_type = mo_model->get_complex_type( iv_complex_type_name ).
+    ENDIF.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~get_property.

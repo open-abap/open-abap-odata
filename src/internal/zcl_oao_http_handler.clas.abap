@@ -14,6 +14,15 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
       IMPORTING
         iv_name       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name
         io_property   TYPE REF TO zcl_oao_property
+        iv_namespace  TYPE string OPTIONAL
+      RETURNING
+        VALUE(rv_xml) TYPE string.
+
+* <ComplexType> elements of the model, printed after the entity types
+    CLASS-METHODS complex_types_xml
+      IMPORTING
+        io_model      TYPE REF TO zcl_oao_model
+        iv_namespace  TYPE string
       RETURNING
         VALUE(rv_xml) TYPE string.
 
@@ -101,6 +110,27 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
                            iv_entity_set = lv_entity_set ).
     ENDIF.
 
+  ENDMETHOD.
+
+  METHOD complex_types_xml.
+    DATA lt_complex_types TYPE zcl_oao_model=>ty_complex_types.
+    DATA ls_complex_type  LIKE LINE OF lt_complex_types.
+    DATA lt_properties    TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
+    DATA ls_property      LIKE LINE OF lt_properties.
+    DATA lo_property      TYPE REF TO zcl_oao_property.
+
+    lt_complex_types = io_model->get_complex_types( ).
+    LOOP AT lt_complex_types INTO ls_complex_type.
+      rv_xml = rv_xml && |      <ComplexType Name="{ ls_complex_type-name }">\n|.
+      lt_properties = ls_complex_type-complex_type->/iwbep/if_mgw_odata_cmplx_type~get_properties( ).
+      LOOP AT lt_properties INTO ls_property.
+        lo_property ?= ls_property-property.
+        rv_xml = rv_xml && property_xml( iv_name      = ls_property-name
+                                         io_property  = lo_property
+                                         iv_namespace = iv_namespace ).
+      ENDLOOP.
+      rv_xml = rv_xml && |      </ComplexType>\n|.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD searchable_xml.
@@ -236,6 +266,11 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     lv_label = io_property->mv_label.
     IF lv_label IS INITIAL.
       lv_label = io_property->mv_abap_fieldname.
+    ENDIF.
+    IF io_property->mv_complex_type IS NOT INITIAL.
+      rv_xml = |        <Property Name="{ iv_name }" Type="{ iv_namespace }.{ io_property->mv_complex_type }" Nullable="{
+        map_boolean( io_property->mv_nullable ) }"/>\n|.
+      RETURN.
     ENDIF.
     IF lv_label IS INITIAL.
       lv_label = iv_name.
@@ -405,8 +440,9 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
       LOOP AT lt_properties INTO ls_property.
         lo_property ?= ls_property-property.
-        rv_xml = rv_xml && property_xml( iv_name     = ls_property-name
-                                         io_property = lo_property ).
+        rv_xml = rv_xml && property_xml( iv_name      = ls_property-name
+                                         io_property  = lo_property
+                                         iv_namespace = lv_namespace ).
       ENDLOOP.
 
       lt_nav_props = lo_entity->get_navigation_properties( ).
@@ -438,6 +474,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
                                                                                                               it_builtin    = lt_set_builtin ) } sap:content-version="1"/>\n|.
       ENDLOOP.
     ENDLOOP.
+    rv_xml = rv_xml && complex_types_xml( io_model     = lo_model
+                                          iv_namespace = lv_namespace ).
 
     LOOP AT lt_associations INTO lo_association.
       rv_xml = rv_xml && association_xml( io_association = lo_association

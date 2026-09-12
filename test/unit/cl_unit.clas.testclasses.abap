@@ -9,6 +9,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS date_display_format FOR TESTING RAISING cx_static_check.
     METHODS associations FOR TESTING RAISING cx_static_check.
     METHODS actions FOR TESTING RAISING cx_static_check.
+    METHODS complex_types FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
@@ -229,6 +230,65 @@ CLASS ltcl_test IMPLEMENTATION.
                                         exp = 'Edm.String' ).
     cl_abap_unit_assert=>assert_equals( act = lo_oao_par->mv_abap_fieldname
                                         exp = 'ID' ).
+  ENDMETHOD.
+
+  METHOD complex_types.
+* SEGW: model->create_complex_type, properties on it, then an entity type
+* property typed by it via create_complex_property
+    DATA lo_model    TYPE REF TO zcl_oao_model.
+    DATA lo_intf     TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA lo_complex  TYPE REF TO /iwbep/if_mgw_odata_cmplx_type.
+    DATA lo_returned TYPE REF TO /iwbep/if_mgw_odata_cmplx_type.
+    DATA lo_entity   TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_property TYPE REF TO /iwbep/if_mgw_odata_property.
+    DATA lo_oao      TYPE REF TO zcl_oao_property.
+    DATA lt_complex  TYPE zcl_oao_model=>ty_complex_types.
+    DATA lv_xml      TYPE string.
+
+    CREATE OBJECT lo_model.
+    lo_intf = lo_model.
+    lo_complex = lo_intf->create_complex_type( 'Address' ).
+    lo_property = lo_complex->create_property( iv_property_name  = 'Street'
+                                               iv_abap_fieldname = 'STREET' ).
+    lo_property->set_type_edm_string( ).
+    lo_property->set_maxlength( 40 ).
+    lo_property = lo_complex->create_property( 'City' ).
+    lo_property->set_type_edm_string( ).
+    lo_complex->bind_structure( 'ZCL_NOT_THERE=>TS_ADDRESS' ).
+
+    lo_entity = lo_intf->create_entity_type( 'Partner' ).
+    lo_returned = lo_entity->create_complex_property( iv_property_name     = 'Address'
+                                                      iv_complex_type_name = 'Address'
+                                                      iv_abap_fieldname    = 'ADDRESS' ).
+    cl_abap_unit_assert=>assert_bound( lo_returned ).
+    cl_abap_unit_assert=>assert_equals( act = lo_returned
+                                        exp = lo_complex ).
+
+    lt_complex = lo_model->get_complex_types( ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_complex )
+                                        exp = 1 ).
+    lo_oao ?= lo_entity->get_property( 'Address' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_complex_type
+                                        exp = 'Address' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_abap_fieldname
+                                        exp = 'ADDRESS' ).
+
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name      = 'Address'
+                                                 io_property  = lo_oao
+                                                 iv_namespace = 'ZSRV' ).
+    cl_abap_unit_assert=>assert_equals( act = lv_xml
+                                        exp = |        <Property Name="Address" Type="ZSRV.Address" Nullable="false"/>\n| ).
+
+    lv_xml = zcl_oao_http_handler=>complex_types_xml( io_model     = lo_model
+                                                      iv_namespace = 'ZSRV' ).
+    FIND '<ComplexType Name="Address">' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    FIND '<Property Name="Street" Type="Edm.String" Nullable="false" MaxLength="40"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    FIND '<Property Name="City" Type="Edm.String"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    FIND '</ComplexType>' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
   ENDMETHOD.
 
   METHOD unknown_service.
