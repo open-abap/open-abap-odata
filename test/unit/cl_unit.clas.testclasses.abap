@@ -10,6 +10,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS associations FOR TESTING RAISING cx_static_check.
     METHODS actions FOR TESTING RAISING cx_static_check.
     METHODS complex_types FOR TESTING RAISING cx_static_check.
+    METHODS sb_odata_types FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
@@ -341,6 +342,15 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_subrc( ).
     FIND '</ComplexType>' IN lv_xml.
     cl_abap_unit_assert=>assert_subrc( ).
+  ENDMETHOD.
+
+  METHOD sb_odata_types.
+* SEGW types an Edm.Int16 property of an unbound entity type as
+* /iwbep/sb_odata_ty_int2 in the generated TS_ structures
+    DATA lv_int2 TYPE /iwbep/sb_odata_ty_int2.
+    lv_int2 = 32767.
+    cl_abap_unit_assert=>assert_equals( act = lv_int2
+                                        exp = 32767 ).
   ENDMETHOD.
 
   METHOD unknown_service.
