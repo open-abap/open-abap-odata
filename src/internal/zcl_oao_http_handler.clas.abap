@@ -77,6 +77,13 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
       RETURNING
         VALUE(rv_xml) TYPE string.
 
+    CLASS-METHODS annotation_value
+      IMPORTING
+        io_annotation   TYPE REF TO zcl_oao_annotation
+        iv_key          TYPE string
+      RETURNING
+        VALUE(rv_value) TYPE string.
+
     CLASS-METHODS custom_annotations_xml
       IMPORTING
         io_annotation TYPE REF TO zcl_oao_annotation
@@ -237,6 +244,20 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+  METHOD annotation_value.
+    DATA lt_annotations TYPE zcl_oao_annotation=>ty_annotations.
+    DATA ls_annotation  LIKE LINE OF lt_annotations.
+
+    IF io_annotation IS NOT BOUND.
+      RETURN.
+    ENDIF.
+    lt_annotations = io_annotation->get_all( ).
+    READ TABLE lt_annotations INTO ls_annotation WITH KEY key = iv_key.
+    IF sy-subrc = 0.
+      rv_value = ls_annotation-value.
+    ENDIF.
+  ENDMETHOD.
+
   METHOD custom_annotations_xml.
     DATA lt_annotations TYPE zcl_oao_annotation=>ty_annotations.
     DATA ls_annotation  LIKE LINE OF lt_annotations.
@@ -262,9 +283,15 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lv_label   TYPE string.
     DATA lt_builtin TYPE string_table.
 
-* label: an explicit one (CDS @EndUserText.label via SADL), else the ABAP
-* field name, which is what SEGW puts into the text element by default
-    lv_label = io_property->mv_label.
+* label: the sap:label annotation the MPC added (SEGW writes the label of
+* the model as create_annotation( 'sap' )->add( iv_key = 'label' )), else an
+* explicit one (CDS @EndUserText.label via SADL), else the ABAP field name,
+* which is what SEGW puts into the text element by default
+    lv_label = annotation_value( io_annotation = io_property->mo_annotation
+                                 iv_key        = 'label' ).
+    IF lv_label IS INITIAL.
+      lv_label = io_property->mv_label.
+    ENDIF.
     IF lv_label IS INITIAL.
       lv_label = io_property->mv_abap_fieldname.
     ENDIF.
