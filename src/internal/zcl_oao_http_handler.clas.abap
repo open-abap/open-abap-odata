@@ -43,6 +43,11 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
       IMPORTING iv_boolean       TYPE abap_bool
       RETURNING VALUE(rv_string) TYPE string.
 
+* sap:searchable, printed only when set_has_ftxt_search said so (as the Gateway does)
+    CLASS-METHODS searchable_xml
+      IMPORTING io_set        TYPE REF TO zcl_oao_entity_set
+      RETURNING VALUE(rv_xml) TYPE string.
+
     CLASS-METHODS multiplicity
       IMPORTING
         iv_card          TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_cardinality
@@ -96,6 +101,12 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
                            iv_entity_set = lv_entity_set ).
     ENDIF.
 
+  ENDMETHOD.
+
+  METHOD searchable_xml.
+    IF io_set->mv_fsearch = abap_true.
+      rv_xml = ` sap:searchable="true"`.
+    ENDIF.
   ENDMETHOD.
 
   METHOD map_boolean.
@@ -341,6 +352,7 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lt_entity_sets  TYPE zcl_oao_entity_typ=>ty_entity_sets.
     DATA ls_entity_set   LIKE LINE OF lt_entity_sets.
     DATA lv_sets_xml     TYPE string.
+    DATA lv_searchable TYPE string.
     DATA lt_nav_props    TYPE zcl_oao_entity_typ=>ty_nav_props.
     DATA lo_nav          TYPE REF TO zcl_oao_nav_prop.
     DATA lt_associations TYPE zcl_oao_model=>ty_associations.
@@ -416,13 +428,14 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
       lt_entity_sets = lo_entity->get_entity_sets( ).
       LOOP AT lt_entity_sets INTO ls_entity_set.
+        lv_searchable = searchable_xml( ls_entity_set-entity_set ).
         lv_sets_xml = lv_sets_xml &&
           |        <EntitySet Name="{ ls_entity_set-name }" EntityType="{ lv_namespace }.{ lv_entity_type }" sap:creatable="{
             map_boolean( ls_entity_set-entity_set->mv_creatable ) }" sap:updatable="{
             map_boolean( ls_entity_set-entity_set->mv_updatable ) }" sap:deletable="{
             map_boolean( ls_entity_set-entity_set->mv_deletable ) }" sap:pageable="{
-            map_boolean( ls_entity_set-entity_set->mv_pageable ) }"{ custom_annotations_xml( io_annotation = ls_entity_set-entity_set->mo_annotation
-                                                                                             it_builtin    = lt_set_builtin ) } sap:content-version="1"/>\n|.
+            map_boolean( ls_entity_set-entity_set->mv_pageable ) }"{ lv_searchable }{ custom_annotations_xml( io_annotation = ls_entity_set-entity_set->mo_annotation
+                                                                                                              it_builtin    = lt_set_builtin ) } sap:content-version="1"/>\n|.
       ENDLOOP.
     ENDLOOP.
 
