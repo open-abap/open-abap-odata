@@ -12,6 +12,8 @@ CLASS zcl_oao_property DEFINITION PUBLIC.
     DATA mv_maxlength      TYPE i.
     DATA mv_precision      TYPE i.
     DATA mv_edm_type       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_edm_type.
+* set instead of mv_edm_type when the property is typed by a complex type of the model
+    DATA mv_complex_type   TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name.
     DATA mv_conv_exit      TYPE string.
     DATA mv_conversion     TYPE abap_bool VALUE abap_true.
     DATA mv_content_type   TYPE abap_bool.

@@ -8,6 +8,12 @@ CLASS zcl_oao_model DEFINITION PUBLIC.
     TYPES ty_assoc_sets   TYPE STANDARD TABLE OF REF TO zcl_oao_assoc_set WITH DEFAULT KEY.
     TYPES ty_actions      TYPE STANDARD TABLE OF REF TO zcl_oao_action WITH DEFAULT KEY.
 
+    TYPES: BEGIN OF ty_complex_type,
+             name         TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
+             complex_type TYPE REF TO zcl_oao_cmplx_type,
+           END OF ty_complex_type.
+    TYPES ty_complex_types TYPE STANDARD TABLE OF ty_complex_type WITH DEFAULT KEY.
+
     METHODS get_entity_type_names
       RETURNING
         VALUE(rt_names) TYPE ty_entity_names.
@@ -24,6 +30,10 @@ CLASS zcl_oao_model DEFINITION PUBLIC.
       RETURNING
         VALUE(rt_actions) TYPE ty_actions.
 
+    METHODS get_complex_types
+      RETURNING
+        VALUE(rt_complex_types) TYPE ty_complex_types.
+
 * schema-level vocabulary annotations (<Annotations Target=...>), raw XML
     METHODS add_vocabulary_xml
       IMPORTING
@@ -38,6 +48,7 @@ CLASS zcl_oao_model DEFINITION PUBLIC.
     DATA mt_associations TYPE ty_associations.
     DATA mt_assoc_sets   TYPE ty_assoc_sets.
     DATA mt_actions      TYPE ty_actions.
+    DATA mt_complex_types TYPE ty_complex_types.
     DATA mt_vocabulary   TYPE string_table.
 
     TYPES: BEGIN OF ty_entity,
@@ -55,6 +66,29 @@ CLASS zcl_oao_model IMPLEMENTATION.
     lo_action->mv_name = iv_action_name.
     APPEND lo_action TO mt_actions.
     ro_action = lo_action.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_model~create_complex_type.
+    DATA ls_row LIKE LINE OF mt_complex_types.
+
+    CREATE OBJECT ls_row-complex_type.
+    ls_row-name = iv_complex_type_name.
+    APPEND ls_row TO mt_complex_types.
+    ro_complex_type = ls_row-complex_type.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_model~get_complex_type.
+    DATA ls_row LIKE LINE OF mt_complex_types.
+
+    READ TABLE mt_complex_types INTO ls_row WITH KEY name = iv_complex_type_name.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_med_exception.
+    ENDIF.
+    ro_complex_type = ls_row-complex_type.
+  ENDMETHOD.
+
+  METHOD get_complex_types.
+    rt_complex_types = mt_complex_types.
   ENDMETHOD.
 
   METHOD get_actions.
@@ -105,7 +139,11 @@ CLASS zcl_oao_model IMPLEMENTATION.
   METHOD /iwbep/if_mgw_odata_model~create_entity_type.
     DATA ls_row LIKE LINE OF mt_entities.
 
-    CREATE OBJECT ro_entity TYPE zcl_oao_entity_typ.
+    DATA lo_entity TYPE REF TO zcl_oao_entity_typ.
+
+    CREATE OBJECT lo_entity.
+    lo_entity->mo_model = me.
+    ro_entity = lo_entity.
 
     ls_row-entity_name = iv_entity_type_name.
     ls_row-entity      = ro_entity.
