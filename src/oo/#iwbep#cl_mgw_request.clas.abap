@@ -72,6 +72,10 @@ CLASS /iwbep/cl_mgw_request IMPLEMENTATION.
     RETURN.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_req_entityset~get_source_entity_set_name.
+    RETURN.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_req_entityset~get_top.
     RETURN.
   ENDMETHOD.
