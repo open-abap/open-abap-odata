@@ -144,7 +144,12 @@
     "cyclic_oo": {
       "exclude": [],
       "severity": "Error",
-      "skip": [],
+      "skip": [
+        "/IWBEP/IF_MGW_VOCAN_ANNOTATION",
+        "/IWBEP/IF_MGW_VOCAN_COLLECTION",
+        "/IWBEP/IF_MGW_VOCAN_PROPERTY",
+        "/IWBEP/IF_MGW_VOCAN_RECORD"
+      ],
       "skipSharedMemory": true,
       "skipTestclasses": true
     },
