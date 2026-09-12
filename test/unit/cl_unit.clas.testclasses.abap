@@ -6,6 +6,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS data_via_registry FOR TESTING RAISING cx_static_check.
     METHODS unknown_service FOR TESTING RAISING cx_static_check.
     METHODS edm_types FOR TESTING RAISING cx_static_check.
+    METHODS date_display_format FOR TESTING RAISING cx_static_check.
     METHODS associations FOR TESTING RAISING cx_static_check.
     METHODS actions FOR TESTING RAISING cx_static_check.
 ENDCLASS.
@@ -49,6 +50,37 @@ CLASS ltcl_test IMPLEMENTATION.
       act = ls_data-content_type
       exp = 'application/json' ).
     cl_abap_unit_assert=>assert_true( boolc( ls_data-data CS '"Something1" : "HELLO"' ) ).
+  ENDMETHOD.
+
+  METHOD date_display_format.
+* bind_structure looks at the bound structure: a DATS field behind an
+* Edm.DateTime is printed with sap:display-format="Date", as the Gateway does
+    DATA lo_model    TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA lo_entity   TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_property TYPE REF TO /iwbep/if_mgw_odata_property.
+    DATA lo_oao      TYPE REF TO zcl_oao_property.
+    DATA lv_xml      TYPE string.
+
+    CREATE OBJECT lo_model TYPE zcl_oao_model.
+    lo_entity = lo_model->create_entity_type( 'Dated' ).
+    lo_property = lo_entity->create_property( iv_property_name  = 'Id'
+                                              iv_abap_fieldname = 'ID' ).
+    lo_property->set_type_edm_string( ).
+    lo_property = lo_entity->create_property( iv_property_name  = 'When'
+                                              iv_abap_fieldname = 'WHEN' ).
+    lo_property->set_type_edm_datetime( ).
+    lo_entity->bind_structure( 'ZCL_ZSEGW_MPC=>TS_DATED' ).
+
+    lo_oao ?= lo_entity->get_property( 'When' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_display_format
+                                        exp = 'Date' ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'When'
+                                                 io_property = lo_oao ).
+    FIND 'sap:display-format="Date"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+
+    lo_oao ?= lo_entity->get_property( 'Id' ).
+    cl_abap_unit_assert=>assert_initial( lo_oao->mv_display_format ).
   ENDMETHOD.
 
   METHOD edm_types.

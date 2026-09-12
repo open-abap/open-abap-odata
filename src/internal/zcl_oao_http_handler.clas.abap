@@ -246,6 +246,9 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
         lv_facets = | Precision="{ io_property->mv_maxlength }" Scale="{ io_property->mv_precision }"|.
       WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-datetime.
         lv_facets = | Precision="{ io_property->mv_precision }"|.
+        IF io_property->mv_display_format IS NOT INITIAL.
+          lv_facets = |{ lv_facets } sap:display-format="{ io_property->mv_display_format }"|.
+        ENDIF.
       WHEN OTHERS.
         lv_facets = ``.
     ENDCASE.
