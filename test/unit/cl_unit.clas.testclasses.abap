@@ -28,6 +28,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS unknown_service FOR TESTING RAISING cx_static_check.
     METHODS edm_types FOR TESTING RAISING cx_static_check.
     METHODS date_display_format FOR TESTING RAISING cx_static_check.
+    METHODS label_annotation FOR TESTING RAISING cx_static_check.
     METHODS associations FOR TESTING RAISING cx_static_check.
     METHODS actions FOR TESTING RAISING cx_static_check.
     METHODS complex_types FOR TESTING RAISING cx_static_check.
@@ -119,6 +120,43 @@ CLASS ltcl_test IMPLEMENTATION.
 
     lo_oao ?= lo_entity->get_property( 'Id' ).
     cl_abap_unit_assert=>assert_initial( lo_oao->mv_display_format ).
+  ENDMETHOD.
+
+  METHOD label_annotation.
+* SEGW writes the label of the model into the MPC as an annotation of the
+* property: create_annotation( 'sap' )->add( iv_key = 'label' ); it wins
+* over the field name and is not printed a second time
+    DATA lo_model    TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA lo_entity   TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_property TYPE REF TO /iwbep/if_mgw_odata_property.
+    DATA lo_oao      TYPE REF TO zcl_oao_property.
+    DATA lv_xml      TYPE string.
+
+    CREATE OBJECT lo_model TYPE zcl_oao_model.
+    lo_entity = lo_model->create_entity_type( 'Labelled' ).
+    lo_property = lo_entity->create_property( iv_property_name  = 'TravelId'
+                                              iv_abap_fieldname = 'TRAVEL_ID' ).
+    lo_property->set_type_edm_string( ).
+    lo_property->/iwbep/if_mgw_odata_annotatabl~create_annotation( 'sap' )->add(
+      iv_key   = 'label'
+      iv_value = 'Travel' ).
+    lo_property = lo_entity->create_property( iv_property_name  = 'Description'
+                                              iv_abap_fieldname = 'DESCRIPTION' ).
+    lo_property->set_type_edm_string( ).
+
+    lo_oao ?= lo_entity->get_property( 'TravelId' ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'TravelId'
+                                                 io_property = lo_oao ).
+    FIND 'sap:label="Travel"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    FIND 'sap:label="TRAVEL_ID"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( exp = 4 ).
+
+    lo_oao ?= lo_entity->get_property( 'Description' ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'Description'
+                                                 io_property = lo_oao ).
+    FIND 'sap:label="DESCRIPTION"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
   ENDMETHOD.
 
   METHOD edm_types.
