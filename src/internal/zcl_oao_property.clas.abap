@@ -22,6 +22,8 @@ CLASS zcl_oao_property DEFINITION PUBLIC.
     DATA mv_label          TYPE string.
 * sap:display-format, "Date" for a DATS-bound Edm.DateTime (set by bind_structure)
     DATA mv_display_format TYPE string.
+    DATA mv_semantic       TYPE string.
+    DATA mv_etag           TYPE abap_bool.
     DATA mo_annotation     TYPE REF TO zcl_oao_annotation.
 ENDCLASS.
 
@@ -104,6 +106,14 @@ CLASS zcl_oao_property IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_odata_property~set_as_content_type.
     mv_content_type = abap_true.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_semantic.
+    mv_semantic = iv_semantic.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_as_etag.
+    mv_etag = abap_true.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_item~set_label_from_text_element.
