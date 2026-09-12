@@ -14,12 +14,18 @@ CLASS zcl_oao_http_handler DEFINITION PUBLIC.
     CONSTANTS gc_host TYPE string VALUE 'http://localhost:8080'.
 
     CLASS-METHODS metadata
+      IMPORTING
+        iv_service    TYPE string
       RETURNING
         VALUE(rv_xml) TYPE string
       RAISING
-        /iwbep/cx_mgw_med_exception.
+        /iwbep/cx_mgw_med_exception
+        /iwbep/cx_mgw_tech_exception.
 
     CLASS-METHODS data
+      IMPORTING
+        iv_service     TYPE string
+        iv_entity_set  TYPE string
       RETURNING
         VALUE(rv_json) TYPE string
       RAISING
@@ -35,13 +41,24 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
   METHOD handle.
 
-* todo,
-    IF iv_path CP '*$metadata'.
+    DATA lv_service    TYPE string.
+    DATA lv_entity_set TYPE string.
+
+* /sap/opu/odata/sap/<service>/<entity set or $metadata>...
+    FIND REGEX '/sap/opu/odata/sap/([^/]+)/?([^/(?]*)' IN iv_path
+      SUBMATCHES lv_service lv_entity_set.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_tech_exception.
+    ENDIF.
+
+* todo, verb + key + query options
+    IF lv_entity_set = '$metadata'.
       rs_data-content_type = 'text/xml'.
-      rs_data-data = metadata( ).
+      rs_data-data = metadata( lv_service ).
     ELSE.
       rs_data-content_type = 'application/json'.
-      rs_data-data = data( ).
+      rs_data-data = data( iv_service    = lv_service
+                           iv_entity_set = lv_entity_set ).
     ENDIF.
 
   ENDMETHOD.
@@ -59,7 +76,7 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
   METHOD data.
 
-    DATA lo_dpc             TYPE REF TO zcl_zsegw_dpc_ext.
+    DATA lo_dpc             TYPE REF TO /iwbep/if_mgw_appl_srv_runtime.
     DATA lt_filter_option   TYPE /iwbep/t_mgw_select_option.
     DATA ls_paging          TYPE /iwbep/s_mgw_paging.
     DATA lt_key_tab         TYPE /iwbep/t_mgw_name_value_pair.
@@ -71,16 +88,16 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     FIELD-SYMBOLS <tab> TYPE ANY TABLE.
     FIELD-SYMBOLS <row> TYPE any.
 
-    CREATE OBJECT lo_dpc.
+    lo_dpc = zcl_oao_registry=>create_dpc( iv_service ).
     CREATE OBJECT lo_request_context TYPE zcl_oao_request_context
       EXPORTING
-        iv_entity_set_name = 'zsegwSet'.
+        iv_entity_set_name = iv_entity_set.
 
-* todo,
-    lo_dpc->/iwbep/if_mgw_appl_srv_runtime~get_entityset(
+* todo, query options
+    lo_dpc->get_entityset(
       EXPORTING
-        iv_entity_name           = 'zsegwSet'
-        iv_entity_set_name       = ''
+        iv_entity_name           = iv_entity_set
+        iv_entity_set_name       = iv_entity_set
         iv_source_name           = ''
         it_filter_select_options = lt_filter_option
         is_paging                = ls_paging
@@ -122,20 +139,24 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
   METHOD metadata.
 
-    DATA mpc             TYPE REF TO zcl_zsegw_mpc_ext.
+    DATA lo_mpc          TYPE REF TO /iwbep/cl_mgw_push_abs_model.
+    DATA lo_model        TYPE REF TO zcl_oao_model.
     DATA lv_namespace    TYPE string.
-    DATA lt_entity_types TYPE STANDARD TABLE OF /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name WITH DEFAULT KEY.
+    DATA lt_entity_types TYPE zcl_oao_model=>ty_entity_names.
     DATA lv_entity_type  LIKE LINE OF lt_entity_types.
-    DATA lo_entity       TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_entity       TYPE REF TO zcl_oao_entity_typ.
     DATA lt_properties   TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
     DATA ls_property     LIKE LINE OF lt_properties.
     DATA lo_property     TYPE REF TO zcl_oao_property.
+    DATA lt_entity_sets  TYPE zcl_oao_entity_typ=>ty_entity_sets.
+    DATA ls_entity_set   LIKE LINE OF lt_entity_sets.
+    DATA lv_sets_xml     TYPE string.
 
-    INSERT zcl_zsegw_mpc_ext=>gc_zsegw INTO TABLE lt_entity_types.
-
-    CREATE OBJECT mpc.
-    mpc->define( ).
-    mpc->model->get_schema_namespace( IMPORTING ev_namespace = lv_namespace ).
+    lo_mpc = zcl_oao_registry=>create_mpc( iv_service ).
+    lo_mpc->define( ).
+    lo_model ?= lo_mpc->model.
+    lo_model->/iwbep/if_mgw_odata_model~get_schema_namespace( IMPORTING ev_namespace = lv_namespace ).
+    lt_entity_types = lo_model->get_entity_type_names( ).
 
     rv_xml =
       |<?xml version="1.0" encoding="utf-8"?>\n| &&
@@ -144,16 +165,23 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       |    <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="{ lv_namespace }" xml:lang="en" sap:schema-version="1">\n| &&
       |      <Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>\n|.
     LOOP AT lt_entity_types INTO lv_entity_type.
-      lo_entity = mpc->model->get_entity_type( lv_entity_type ).
-* todo,
+      lo_entity ?= lo_model->/iwbep/if_mgw_odata_model~get_entity_type( lv_entity_type ).
+      lt_properties = lo_entity->/iwbep/if_mgw_odata_entity_typ~get_properties( ).
+
       rv_xml = rv_xml &&
         |      <EntityType Name="{ lv_entity_type }" sap:content-version="1">\n| &&
-        |        <Key>\n| &&
-        |          <PropertyRef Name="Something1"/>\n| &&
-        |        </Key>\n|.
-      lt_properties = lo_entity->get_properties( ).
+        |        <Key>\n|.
       LOOP AT lt_properties INTO ls_property.
         lo_property ?= ls_property-property.
+        IF lo_property->mv_is_key = abap_true.
+          rv_xml = rv_xml && |          <PropertyRef Name="{ ls_property-name }"/>\n|.
+        ENDIF.
+      ENDLOOP.
+      rv_xml = rv_xml && |        </Key>\n|.
+
+      LOOP AT lt_properties INTO ls_property.
+        lo_property ?= ls_property-property.
+* todo, label
         rv_xml = rv_xml &&
           |        <Property Name="{ ls_property-name }" Type="{
             lo_property->mv_edm_type }" Nullable="{
@@ -165,11 +193,21 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
             map_boolean( lo_property->mv_filterable ) }"/>\n|.
       ENDLOOP.
       rv_xml = rv_xml && |      </EntityType>\n|.
+
+      lt_entity_sets = lo_entity->get_entity_sets( ).
+      LOOP AT lt_entity_sets INTO ls_entity_set.
+        lv_sets_xml = lv_sets_xml &&
+          |        <EntitySet Name="{ ls_entity_set-name }" EntityType="{ lv_namespace }.{ lv_entity_type }" sap:creatable="{
+            map_boolean( ls_entity_set-entity_set->mv_creatable ) }" sap:updatable="{
+            map_boolean( ls_entity_set-entity_set->mv_updatable ) }" sap:deletable="{
+            map_boolean( ls_entity_set-entity_set->mv_deletable ) }" sap:pageable="{
+            map_boolean( ls_entity_set-entity_set->mv_pageable ) }" sap:content-version="1"/>\n|.
+      ENDLOOP.
     ENDLOOP.
-* todo,
+
     rv_xml = rv_xml &&
       |      <EntityContainer Name="{ lv_namespace }_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="json">\n| &&
-      |        <EntitySet Name="zsegwSet" EntityType="{ lv_namespace }.zsegw" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>\n| &&
+      lv_sets_xml &&
       |      </EntityContainer>\n| &&
       |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="{ gc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&
       |      <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="{ gc_host }/sap/opu/odata/sap/{ lv_namespace }/$metadata"/>\n| &&

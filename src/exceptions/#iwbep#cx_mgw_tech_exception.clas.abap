@@ -18,6 +18,9 @@ CLASS /iwbep/cx_mgw_tech_exception DEFINITION INHERITING FROM /iwbep/cx_mgw_base
                  attr4 TYPE scx_attrname VALUE '',
                END OF internal_error.
 
+    DATA method    TYPE string READ-ONLY.
+    DATA operation TYPE string READ-ONLY.
+
     METHODS constructor
       IMPORTING
         textid    LIKE if_t100_message=>t100key OPTIONAL
@@ -29,7 +32,15 @@ ENDCLASS.
 CLASS /iwbep/cx_mgw_tech_exception IMPLEMENTATION.
 
   METHOD constructor.
-    ASSERT 1 = 'todo'.
+    IF textid IS INITIAL.
+      super->constructor( textid   = internal_error
+                          previous = previous ).
+    ELSE.
+      super->constructor( textid   = textid
+                          previous = previous ).
+    ENDIF.
+    me->method    = method.
+    me->operation = operation.
   ENDMETHOD.
 
 ENDCLASS.

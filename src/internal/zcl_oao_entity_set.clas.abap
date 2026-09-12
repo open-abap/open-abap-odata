@@ -2,7 +2,6 @@ CLASS zcl_oao_entity_set DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_entity_set.
 
-  PRIVATE SECTION.
     DATA mv_creatable       TYPE abap_bool.
     DATA mv_updatable       TYPE abap_bool.
     DATA mv_deletable       TYPE abap_bool.

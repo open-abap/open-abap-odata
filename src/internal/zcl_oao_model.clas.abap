@@ -1,8 +1,15 @@
 CLASS zcl_oao_model DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_model.
+
+    TYPES ty_entity_names TYPE STANDARD TABLE OF /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name WITH DEFAULT KEY.
+
+    METHODS get_entity_type_names
+      RETURNING
+        VALUE(rt_names) TYPE ty_entity_names.
   PRIVATE SECTION.
     DATA mv_namespace TYPE string.
+    DATA mt_entity_names TYPE ty_entity_names.
 
     TYPES: BEGIN OF ty_entity,
              entity_name TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
@@ -33,6 +40,11 @@ CLASS zcl_oao_model IMPLEMENTATION.
     ls_row-entity      = ro_entity.
     INSERT ls_row INTO TABLE mt_entities.
     ASSERT sy-subrc = 0.
+    APPEND iv_entity_type_name TO mt_entity_names.
+  ENDMETHOD.
+
+  METHOD get_entity_type_names.
+    rt_names = mt_entity_names.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_model~get_entity_type.
