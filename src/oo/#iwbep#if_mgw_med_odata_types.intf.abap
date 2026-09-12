@@ -21,6 +21,14 @@ INTERFACE /iwbep/if_mgw_med_odata_types PUBLIC.
                decimal  TYPE ty_e_med_edm_type VALUE 'Edm.Decimal',
                datetime TYPE ty_e_med_edm_type VALUE 'Edm.DateTime',
                time     TYPE ty_e_med_edm_type VALUE 'Edm.Time',
+               guid     TYPE ty_e_med_edm_type VALUE 'Edm.Guid',
+               binary   TYPE ty_e_med_edm_type VALUE 'Edm.Binary',
+               datetimeoffset TYPE ty_e_med_edm_type VALUE 'Edm.DateTimeOffset',
+               int64    TYPE ty_e_med_edm_type VALUE 'Edm.Int64',
+               double   TYPE ty_e_med_edm_type VALUE 'Edm.Double',
+               single   TYPE ty_e_med_edm_type VALUE 'Edm.Single',
+               float    TYPE ty_e_med_edm_type VALUE 'Edm.Float',
+               sbyte    TYPE ty_e_med_edm_type VALUE 'Edm.SByte',
              END OF gcs_edm_data_types.
 
   TYPES ty_e_med_cardinality TYPE c LENGTH 1.

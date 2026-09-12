@@ -57,6 +57,22 @@ INTERFACE /iwbep/if_mgw_odata_property PUBLIC.
 
   METHODS set_type_edm_time.
 
+  METHODS set_type_edm_guid.
+
+  METHODS set_type_edm_binary.
+
+  METHODS set_type_edm_datetimeoffset.
+
+  METHODS set_type_edm_int64.
+
+  METHODS set_type_edm_double.
+
+  METHODS set_type_edm_single.
+
+  METHODS set_type_edm_float.
+
+  METHODS set_type_edm_sbyte.
+
   METHODS disable_conversion.
 
   METHODS set_as_content_type.
