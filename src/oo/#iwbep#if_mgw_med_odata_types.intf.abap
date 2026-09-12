@@ -13,7 +13,14 @@ INTERFACE /iwbep/if_mgw_med_odata_types PUBLIC.
 
   TYPES ty_e_med_edm_type TYPE c LENGTH 20.
   CONSTANTS: BEGIN OF gcs_edm_data_types,
-               string TYPE ty_e_med_edm_type VALUE 'Edm.String',
+               string   TYPE ty_e_med_edm_type VALUE 'Edm.String',
+               byte     TYPE ty_e_med_edm_type VALUE 'Edm.Byte',
+               int16    TYPE ty_e_med_edm_type VALUE 'Edm.Int16',
+               int32    TYPE ty_e_med_edm_type VALUE 'Edm.Int32',
+               boolean  TYPE ty_e_med_edm_type VALUE 'Edm.Boolean',
+               decimal  TYPE ty_e_med_edm_type VALUE 'Edm.Decimal',
+               datetime TYPE ty_e_med_edm_type VALUE 'Edm.DateTime',
+               time     TYPE ty_e_med_edm_type VALUE 'Edm.Time',
              END OF gcs_edm_data_types.
 
   TYPES ty_e_med_cardinality TYPE c LENGTH 1.
