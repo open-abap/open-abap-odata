@@ -14,6 +14,8 @@ CLASS zcl_oao_action DEFINITION PUBLIC.
     DATA mv_http_method         TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_http_method VALUE 'GET'.
     DATA mv_action_for          TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name.
     DATA mt_parameters          TYPE ty_parameters.
+* the ABAP structure the input parameters are read into, from bind_input_structure
+    DATA mv_input_structure     TYPE string.
 ENDCLASS.
 
 CLASS zcl_oao_action IMPLEMENTATION.
@@ -26,6 +28,10 @@ CLASS zcl_oao_action IMPLEMENTATION.
     lo_parameter->mv_abap_fieldname = iv_abap_fieldname.
     APPEND lo_parameter TO mt_parameters.
     ro_parameter = lo_parameter.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_action~bind_input_structure.
+    mv_input_structure = iv_structure_name.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_action~set_return_entity_type.

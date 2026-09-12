@@ -263,6 +263,7 @@ CLASS ltcl_test IMPLEMENTATION.
                                                       iv_abap_fieldname = 'ID' ).
     lo_parameter->set_type_edm_string( ).
     lo_parameter->set_maxlength( 8 ).
+    lo_action->bind_input_structure( 'ZCL_ZSEGW_MPC=>TS_CANCEL' ).
 
     lt_actions = lo_model->get_actions( ).
     cl_abap_unit_assert=>assert_equals( act = lines( lt_actions )
@@ -273,6 +274,8 @@ CLASS ltcl_test IMPLEMENTATION.
                                         exp = 'POST' ).
     cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_return_entity_set
                                         exp = 'HeadSet' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_input_structure
+                                        exp = 'ZCL_ZSEGW_MPC=>TS_CANCEL' ).
     READ TABLE lo_oao->mt_parameters INDEX 1 INTO lo_oao_par.
     cl_abap_unit_assert=>assert_subrc( ).
     cl_abap_unit_assert=>assert_equals( act = lo_oao_par->mv_edm_type
