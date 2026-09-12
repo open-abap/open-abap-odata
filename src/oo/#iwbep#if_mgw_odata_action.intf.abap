@@ -41,6 +41,13 @@ INTERFACE /iwbep/if_mgw_odata_action PUBLIC.
     RAISING
       /iwbep/cx_mgw_med_exception.
 
+  METHODS bind_input_structure
+    IMPORTING
+      iv_structure_name   TYPE string
+      iv_bind_conversions TYPE abap_bool DEFAULT abap_false
+    RAISING
+      /iwbep/cx_mgw_med_exception.
+
   METHODS set_return_multiplicity
     IMPORTING
       iv_cardinality TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_cardinality.
