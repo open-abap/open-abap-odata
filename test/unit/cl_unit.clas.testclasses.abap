@@ -1,3 +1,24 @@
+* a search help provider an application would register
+CLASS ltcl_shlp DEFINITION FOR TESTING.
+  PUBLIC SECTION.
+    INTERFACES /iwbep/if_sb_gendpc_shlp_data.
+ENDCLASS.
+
+CLASS ltcl_shlp IMPLEMENTATION.
+  METHOD /iwbep/if_sb_gendpc_shlp_data~get_search_help_values.
+    DATA ls_row LIKE LINE OF et_return_list.
+
+    CLEAR: et_return_list, es_message.
+    ls_row-record_number = 1.
+    ls_row-field_name    = 'STATUS'.
+    ls_row-field_value   = 'A'.
+    APPEND ls_row TO et_return_list.
+    ls_row-field_name    = 'TEXT'.
+    ls_row-field_value   = |Active { iv_shlp_name }|.
+    APPEND ls_row TO et_return_list.
+  ENDMETHOD.
+ENDCLASS.
+
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
   PRIVATE SECTION.
     METHODS setup.
@@ -12,6 +33,9 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS complex_types FOR TESTING RAISING cx_static_check.
     METHODS sb_odata_types FOR TESTING RAISING cx_static_check.
     METHODS semantics_and_etag FOR TESTING RAISING cx_static_check.
+    METHODS read_after_create_context FOR TESTING RAISING cx_static_check.
+    METHODS search_help_runtime FOR TESTING RAISING cx_static_check.
+    METHODS mapped_dpc_types FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
@@ -389,6 +413,131 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_subrc( ).
     FIND 'sap:semantics' IN lv_xml.
     cl_abap_unit_assert=>assert_subrc( exp = 4 ).
+  ENDMETHOD.
+
+  METHOD read_after_create_context.
+* SEGW: CREATE OBJECT lo_ctx TYPE /iwbep/cl_sb_gen_read_aftr_crt, then
+* set_keys( IMPORTING et_keys = lt_keys ) and the entity set, then get_entity
+    TYPES: BEGIN OF ty_keys,
+             travel_id TYPE c LENGTH 8,
+             other     TYPE c LENGTH 2,
+           END OF ty_keys.
+    DATA lo_context TYPE REF TO /iwbep/cl_sb_gen_read_aftr_crt.
+    DATA lo_request TYPE REF TO /iwbep/if_mgw_req_entity.
+    DATA lt_keys    TYPE /iwbep/t_mgw_tech_pairs.
+    DATA ls_key     TYPE /iwbep/s_mgw_tech_pair.
+    DATA lv_name    TYPE string.
+    DATA ls_keys    TYPE ty_keys.
+
+    CREATE OBJECT lo_context.
+    ls_key-name  = 'TRAVEL_ID'.
+    ls_key-value = 'T0001'.
+    APPEND ls_key TO lt_keys.
+    lo_context->set_keys( IMPORTING et_keys = lt_keys ).
+    lv_name = 'TravelSet'.
+    lo_context->set_entityset_name( IMPORTING ev_entityset_name = lv_name ).
+    lv_name = 'Travel'.
+    lo_context->set_entity_type_name( IMPORTING ev_entity_type_name = lv_name ).
+
+    lo_request = lo_context.
+    cl_abap_unit_assert=>assert_equals( act = lo_request->get_entity_set_name( )
+                                        exp = 'TravelSet' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_request->get_entity_type_name( )
+                                        exp = 'Travel' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_request->get_source_entity_set_name( )
+                                        exp = 'TravelSet' ).
+    lo_request->get_converted_keys( IMPORTING es_key_values = ls_keys ).
+    cl_abap_unit_assert=>assert_equals( act = ls_keys-travel_id
+                                        exp = 'T0001' ).
+    cl_abap_unit_assert=>assert_initial( ls_keys-other ).
+
+* the current SEGW template passes the same through IMPORTING parameters
+    CLEAR lt_keys.
+    ls_key-value = 'T0002'.
+    APPEND ls_key TO lt_keys.
+    CREATE OBJECT lo_context.
+    lo_context->set_keys( lt_keys ).
+    lo_context->set_entityset_name( 'BookingSet' ).
+    lo_context->set_entity_type_name( 'Booking' ).
+    lo_request = lo_context.
+    cl_abap_unit_assert=>assert_equals( act = lo_request->get_entity_set_name( )
+                                        exp = 'BookingSet' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_request->get_entity_type_name( )
+                                        exp = 'Booking' ).
+    lo_request->get_converted_keys( IMPORTING es_key_values = ls_keys ).
+    cl_abap_unit_assert=>assert_equals( act = ls_keys-travel_id
+                                        exp = 'T0002' ).
+  ENDMETHOD.
+
+  METHOD search_help_runtime.
+    DATA lo_sh_data    TYPE REF TO /iwbep/if_sb_shlp_data.
+    DATA lo_provider   TYPE REF TO ltcl_shlp.
+    DATA lt_selopt     TYPE ddshselops.
+    DATA ls_selopt     LIKE LINE OF lt_selopt.
+    DATA lt_result     TYPE /iwbep/if_sb_gendpc_shlp_data=>tt_result_list.
+    DATA ls_result     LIKE LINE OF lt_result.
+    DATA ls_message    TYPE bapiret2.
+
+    zcl_oao_shlp_data=>clear( ).
+    lo_sh_data = /iwbep/cl_sb_shlp_data_factory=>get_sh_data_obj( ).
+    cl_abap_unit_assert=>assert_bound( lo_sh_data ).
+
+* nobody registered the search help: an error message, no dump
+    lo_sh_data->/iwbep/if_sb_gendpc_shlp_data~get_search_help_values(
+      EXPORTING
+        iv_shlp_name   = 'ZSTG_STATUS_SH'
+      IMPORTING
+        et_return_list = lt_result
+        es_message     = ls_message ).
+    cl_abap_unit_assert=>assert_equals( act = ls_message-type
+                                        exp = 'E' ).
+    cl_abap_unit_assert=>assert_initial( lt_result ).
+
+    CREATE OBJECT lo_provider.
+    zcl_oao_shlp_data=>register( iv_shlp_name = 'zstg_status_sh'
+                                 io_provider  = lo_provider ).
+    ls_selopt-shlpname  = 'ZSTG_STATUS_SH'.
+    ls_selopt-shlpfield = 'STATUS'.
+    ls_selopt-sign      = 'I'.
+    ls_selopt-option    = 'EQ'.
+    ls_selopt-low       = 'A'.
+    APPEND ls_selopt TO lt_selopt.
+    lo_sh_data->/iwbep/if_sb_gendpc_shlp_data~get_search_help_values(
+      EXPORTING
+        iv_shlp_name      = 'ZSTG_STATUS_SH'
+        iv_maxrows        = 10
+        iv_sort           = abap_true
+        iv_call_shlt_exit = abap_true
+        it_selopt         = lt_selopt
+      IMPORTING
+        et_return_list    = lt_result
+        es_message        = ls_message ).
+    cl_abap_unit_assert=>assert_initial( ls_message ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_result )
+                                        exp = 2 ).
+    READ TABLE lt_result INDEX 2 INTO ls_result.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = ls_result-field_value
+                                        exp = 'Active ZSTG_STATUS_SH' ).
+    zcl_oao_shlp_data=>clear( ).
+  ENDMETHOD.
+
+  METHOD mapped_dpc_types.
+* the types the RFC templates of SEGW declare, and the entityset context's
+* source entity set
+    DATA lv_exc_msg TYPE /iwbep/mgw_bop_rfc_excep_text.
+    DATA lo_context TYPE REF TO zcl_oao_request_context.
+    DATA lo_request TYPE REF TO /iwbep/if_mgw_req_entityset.
+
+    lv_exc_msg = 'no connection'.
+    cl_abap_unit_assert=>assert_equals( act = lv_exc_msg
+                                        exp = 'no connection' ).
+    CREATE OBJECT lo_context
+      EXPORTING
+        iv_entity_set_name = 'TravelSet'.
+    lo_request = lo_context.
+    cl_abap_unit_assert=>assert_equals( act = lo_request->get_source_entity_set_name( )
+                                        exp = 'TravelSet' ).
   ENDMETHOD.
 
   METHOD unknown_service.

@@ -50,6 +50,10 @@ CLASS zcl_oao_request_context IMPLEMENTATION.
     rv_entity_set = mv_entity_set_name.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_req_entityset~get_source_entity_set_name.
+    rv_entity_set = mv_entity_set_name.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_req_entityset~get_osql_where_clause_convert.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
