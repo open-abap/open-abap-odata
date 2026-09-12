@@ -26,7 +26,7 @@ describe('Integration Test', async () => {
   <edmx:DataServices m:DataServiceVersion="2.0">
     <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZSEGW_SRV" xml:lang="en" sap:schema-version="1">
       <Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
-      <EntityType Name="zsegw" sap:content-version="1">
+      <EntityType Name="zsegw" sap:label="Segw" sap:content-version="1">
         <Key>
           <PropertyRef Name="Something1"/>
         </Key>

@@ -72,6 +72,8 @@ CLASS ltcl_test IMPLEMENTATION.
       act = ls_data-content_type
       exp = 'text/xml' ).
     cl_abap_unit_assert=>assert_true( boolc( ls_data-data CS '<EntityType Name="zsegw"' ) ).
+* the _EXT annotated the entity type, printed before sap:content-version
+    cl_abap_unit_assert=>assert_true( boolc( ls_data-data CS '<EntityType Name="zsegw" sap:label="Segw" sap:content-version="1">' ) ).
     cl_abap_unit_assert=>assert_true( boolc( ls_data-data CS '<PropertyRef Name="Something1"/>' ) ).
     cl_abap_unit_assert=>assert_true( boolc( ls_data-data CS '<EntitySet Name="zsegwSet" EntityType="ZSEGW_SRV.zsegw"' ) ).
   ENDMETHOD.

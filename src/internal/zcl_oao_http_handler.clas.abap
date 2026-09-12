@@ -412,6 +412,7 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lt_actions      TYPE zcl_oao_model=>ty_actions.
     DATA lo_action       TYPE REF TO zcl_oao_action.
     DATA lt_set_builtin  TYPE string_table.
+    DATA lt_type_builtin TYPE string_table.
     DATA lt_vocabulary   TYPE string_table.
     DATA lv_vocabulary   TYPE string.
 
@@ -429,6 +430,7 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     APPEND 'deletable' TO lt_set_builtin.
     APPEND 'pageable' TO lt_set_builtin.
     APPEND 'content-version' TO lt_set_builtin.
+    APPEND 'content-version' TO lt_type_builtin.
 
     rv_xml =
       |<?xml version="1.0" encoding="utf-8"?>\n| &&
@@ -441,7 +443,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       lt_properties = lo_entity->/iwbep/if_mgw_odata_entity_typ~get_properties( ).
 
       rv_xml = rv_xml &&
-        |      <EntityType Name="{ lv_entity_type }" sap:content-version="1">\n| &&
+        |      <EntityType Name="{ lv_entity_type }"{ custom_annotations_xml( io_annotation = lo_entity->mo_annotation
+                                                                              it_builtin    = lt_type_builtin ) } sap:content-version="1">\n| &&
         |        <Key>\n|.
       LOOP AT lt_properties INTO ls_property.
         lo_property ?= ls_property-property.
