@@ -170,6 +170,27 @@ INTERFACE /iwbep/if_mgw_appl_srv_runtime PUBLIC.
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
 
+* what a generated DPC asks before deciding whether an operation or an
+* action is implemented conditionally (SADL-backed sets say yes)
+  METHODS get_is_conditional_implemented
+    IMPORTING
+      iv_operation_type            TYPE string
+      iv_entity_set_name           TYPE string
+    RETURNING
+      VALUE(rv_conditional_active) TYPE abap_bool
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
+  METHODS get_is_condi_imple_for_action
+    IMPORTING
+      iv_action_name               TYPE string
+    RETURNING
+      VALUE(rv_conditional_active) TYPE abap_bool
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
   METHODS execute_action
     IMPORTING
       iv_action_name          TYPE string OPTIONAL

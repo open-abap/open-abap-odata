@@ -29,6 +29,14 @@ CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_appl_srv_runtime~get_is_conditional_implemented.
+    rv_conditional_active = abap_false.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~get_is_condi_imple_for_action.
+    rv_conditional_active = abap_false.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_appl_srv_runtime~execute_action.
     ASSERT 1 = 'todo'.
   ENDMETHOD.

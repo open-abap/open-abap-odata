@@ -46,6 +46,25 @@ INTERFACE if_sadl_gw_dpc PUBLIC.
       /iwbep/cx_mgw_busi_exception
       /iwbep/cx_mgw_tech_exception.
 
+  METHODS get_is_conditional_implemented
+    IMPORTING
+      iv_operation_type            TYPE string
+      iv_entity_set_name           TYPE string
+    RETURNING
+      VALUE(rv_conditional_active) TYPE abap_bool
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
+  METHODS get_is_condi_imple_for_action
+    IMPORTING
+      iv_action_name               TYPE string
+    RETURNING
+      VALUE(rv_conditional_active) TYPE abap_bool
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
   METHODS execute_action
     IMPORTING
       io_tech_request_context TYPE REF TO /iwbep/if_mgw_req_func_import
