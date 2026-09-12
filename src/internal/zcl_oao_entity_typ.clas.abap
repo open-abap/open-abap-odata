@@ -18,6 +18,7 @@ CLASS zcl_oao_entity_typ DEFINITION PUBLIC.
       RETURNING
         VALUE(rt_nav_props) TYPE ty_nav_props.
   PRIVATE SECTION.
+    DATA mv_structure_name TYPE string.
     DATA mt_properties  TYPE /iwbep/if_mgw_med_odata_types=>ty_t_mgw_odata_properties.
     DATA mt_entity_sets TYPE ty_entity_sets.
     DATA mt_nav_props   TYPE ty_nav_props.
@@ -63,8 +64,32 @@ CLASS zcl_oao_entity_typ IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~bind_structure.
-* todo ???
-    RETURN.
+* what the Gateway derives from the bound structure's DDIC types: a date
+* field behind Edm.DateTime is shown as a date (sap:display-format="Date")
+    DATA lo_descr    TYPE REF TO cl_abap_typedescr.
+    DATA lo_struct   TYPE REF TO cl_abap_structdescr.
+    DATA ls_prop     LIKE LINE OF mt_properties.
+    DATA lo_property TYPE REF TO zcl_oao_property.
+    DATA lt_comp     TYPE abap_component_tab.
+    DATA ls_comp     LIKE LINE OF lt_comp.
+
+    mv_structure_name = iv_structure_name.
+    cl_abap_typedescr=>describe_by_name( EXPORTING p_name = iv_structure_name
+                                         RECEIVING type   = lo_descr
+                                         EXCEPTIONS type_not_found = 1 OTHERS = 2 ).
+    IF sy-subrc <> 0 OR lo_descr IS NOT BOUND OR lo_descr->kind <> cl_abap_typedescr=>kind_struct.
+      RETURN.
+    ENDIF.
+    lo_struct ?= lo_descr.
+    lt_comp = lo_struct->get_components( ).
+
+    LOOP AT mt_properties INTO ls_prop.
+      lo_property ?= ls_prop-property.
+      READ TABLE lt_comp INTO ls_comp WITH KEY name = lo_property->mv_abap_fieldname.
+      IF sy-subrc = 0 AND ls_comp-type IS BOUND AND ls_comp-type->type_kind = cl_abap_typedescr=>typekind_date.
+        lo_property->mv_display_format = 'Date'.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~create_property.

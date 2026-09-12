@@ -7,6 +7,11 @@ CLASS zcl_zsegw_mpc DEFINITION
 
     TYPES ts_zsegw TYPE zsegw.
     TYPES tt_zsegw TYPE STANDARD TABLE OF ts_zsegw WITH DEFAULT KEY.
+* a structure with a date field, for the display-format test
+    TYPES: BEGIN OF ts_dated,
+             id   TYPE c LENGTH 4,
+             when TYPE d,
+           END OF ts_dated.
     TYPES: BEGIN OF ts_text_element,
             artifact_name        TYPE c LENGTH 40,
             artifact_type        TYPE c LENGTH 4,

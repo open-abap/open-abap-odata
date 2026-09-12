@@ -18,6 +18,8 @@ CLASS zcl_oao_property DEFINITION PUBLIC.
     DATA mv_text_symbol    TYPE textpoolky.
     DATA mv_text_container TYPE string.
     DATA mv_label          TYPE string.
+* sap:display-format, "Date" for a DATS-bound Edm.DateTime (set by bind_structure)
+    DATA mv_display_format TYPE string.
     DATA mo_annotation     TYPE REF TO zcl_oao_annotation.
 ENDCLASS.
 
