@@ -36,6 +36,8 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS read_after_create_context FOR TESTING RAISING cx_static_check.
     METHODS search_help_runtime FOR TESTING RAISING cx_static_check.
     METHODS mapped_dpc_types FOR TESTING RAISING cx_static_check.
+    METHODS shlp_ddic_where FOR TESTING RAISING cx_static_check.
+    METHODS shlp_ddic_select FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
@@ -538,6 +540,135 @@ CLASS ltcl_test IMPLEMENTATION.
     lo_request = lo_context.
     cl_abap_unit_assert=>assert_equals( act = lo_request->get_source_entity_set_name( )
                                         exp = 'TravelSet' ).
+  ENDMETHOD.
+
+  METHOD shlp_ddic_where.
+    DATA lo_shlp   TYPE REF TO zcl_oao_shlp_ddic.
+    DATA lt_selopt TYPE ddshselops.
+    DATA ls_selopt TYPE ddshselopt.
+
+    lo_shlp = zcl_oao_shlp_ddic=>create( iv_shlp_name = 'ZSEGW_SH'
+                                         iv_selmethod = 'ZSEGW' ).
+    cl_abap_unit_assert=>assert_initial( lo_shlp->where_clause( lt_selopt ) ).
+
+    ls_selopt-shlpfield = 'SOMETHING1'.
+    ls_selopt-sign      = 'I'.
+    ls_selopt-option    = 'CP'.
+    ls_selopt-low       = 'HE*'.
+    APPEND ls_selopt TO lt_selopt.
+    ls_selopt-option    = 'EQ'.
+    ls_selopt-low       = 'O''NEIL'.
+    APPEND ls_selopt TO lt_selopt.
+    ls_selopt-shlpfield = 'SOMETHING2'.
+    ls_selopt-sign      = 'E'.
+    ls_selopt-option    = 'BT'.
+    ls_selopt-low       = 'A'.
+    ls_selopt-high      = 'B'.
+    APPEND ls_selopt TO lt_selopt.
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_shlp->where_clause( lt_selopt )
+      exp = `( something1 LIKE 'HE%' OR something1 = 'O''NEIL' ) AND ( NOT ( something2 BETWEEN 'A' AND 'B' ) )` ).
+  ENDMETHOD.
+
+  METHOD shlp_ddic_select.
+* the DDIC search help over the test table, reached the way a generated DPC
+* reaches it: through the factory, by name
+    DATA lo_sh_data TYPE REF TO /iwbep/if_sb_shlp_data.
+    DATA lo_shlp    TYPE REF TO zcl_oao_shlp_ddic.
+    DATA ls_row     TYPE zsegw.
+    DATA lt_selopt  TYPE ddshselops.
+    DATA ls_selopt  TYPE ddshselopt.
+    DATA lt_result  TYPE /iwbep/if_sb_gendpc_shlp_data=>tt_result_list.
+    DATA ls_result  LIKE LINE OF lt_result.
+    DATA ls_message TYPE bapiret2.
+
+    ls_row-mandt      = '123'.
+    ls_row-something1 = 'SHLP2'.
+    ls_row-something2 = 'ZZ'.
+    INSERT zsegw FROM @ls_row.
+    cl_abap_unit_assert=>assert_subrc( ).
+    ls_row-something1 = 'SHLP1'.
+    ls_row-something2 = 'AA'.
+    INSERT zsegw FROM @ls_row.
+    cl_abap_unit_assert=>assert_subrc( ).
+    ls_row-something1 = 'OTHER'.
+    INSERT zsegw FROM @ls_row.
+    cl_abap_unit_assert=>assert_subrc( ).
+
+    zcl_oao_shlp_data=>clear( ).
+    lo_shlp = zcl_oao_shlp_ddic=>create( iv_shlp_name = 'ZSEGW_SH'
+                                         iv_selmethod = 'ZSEGW' ).
+    lo_shlp->add_parameter( iv_name            = 'SOMETHING1'
+                            iv_list_position   = 1
+                            iv_select_position = 1 ).
+    lo_shlp->add_parameter( iv_name          = 'SOMETHING2'
+                            iv_list_position = 2 ).
+    lo_shlp->register( ).
+
+    lo_sh_data = /iwbep/cl_sb_shlp_data_factory=>get_sh_data_obj( ).
+    ls_selopt-shlpfield = 'SOMETHING1'.
+    ls_selopt-sign      = 'I'.
+    ls_selopt-option    = 'CP'.
+    ls_selopt-low       = 'SHLP*'.
+    APPEND ls_selopt TO lt_selopt.
+    lo_sh_data->/iwbep/if_sb_gendpc_shlp_data~get_search_help_values(
+      EXPORTING
+        iv_shlp_name   = 'zsegw_sh'
+        iv_sort        = abap_true
+        it_selopt      = lt_selopt
+      IMPORTING
+        et_return_list = lt_result
+        es_message     = ls_message ).
+    cl_abap_unit_assert=>assert_initial( ls_message ).
+* two records, two fields each, sorted by the list: SHLP1 before SHLP2
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_result )
+                                        exp = 4 ).
+    READ TABLE lt_result INDEX 1 INTO ls_result.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = ls_result-record_number
+                                        exp = 1 ).
+    cl_abap_unit_assert=>assert_equals( act = ls_result-field_name
+                                        exp = 'SOMETHING1' ).
+    cl_abap_unit_assert=>assert_equals( act = ls_result-field_value
+                                        exp = 'SHLP1' ).
+    READ TABLE lt_result INDEX 4 INTO ls_result.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = ls_result-record_number
+                                        exp = 2 ).
+    cl_abap_unit_assert=>assert_equals( act = ls_result-field_name
+                                        exp = 'SOMETHING2' ).
+    cl_abap_unit_assert=>assert_equals( act = ls_result-field_value
+                                        exp = 'ZZ' ).
+
+* iv_maxrows cuts after sorting
+    lo_sh_data->/iwbep/if_sb_gendpc_shlp_data~get_search_help_values(
+      EXPORTING
+        iv_shlp_name   = 'ZSEGW_SH'
+        iv_maxrows     = 1
+        iv_sort        = abap_true
+        it_selopt      = lt_selopt
+      IMPORTING
+        et_return_list = lt_result
+        es_message     = ls_message ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_result )
+                                        exp = 2 ).
+
+* an exit search help is honest about not being served
+    zcl_oao_shlp_ddic=>create( iv_shlp_name = 'ZSEGW_EXIT_SH'
+                               iv_selmexit  = 'Z_SHLP_EXIT' )->register( ).
+    lo_sh_data->/iwbep/if_sb_gendpc_shlp_data~get_search_help_values(
+      EXPORTING
+        iv_shlp_name   = 'ZSEGW_EXIT_SH'
+      IMPORTING
+        et_return_list = lt_result
+        es_message     = ls_message ).
+    cl_abap_unit_assert=>assert_equals( act = ls_message-type
+                                        exp = 'E' ).
+    cl_abap_unit_assert=>assert_initial( lt_result ).
+
+    DELETE FROM zsegw WHERE something1 = 'SHLP1' OR something1 = 'SHLP2' OR something1 = 'OTHER'.
+    cl_abap_unit_assert=>assert_subrc( ).
+    zcl_oao_shlp_data=>clear( ).
   ENDMETHOD.
 
   METHOD unknown_service.

@@ -153,7 +153,9 @@
       "severity": "Error",
       "max": 20
     },
-    "dangerous_statement": true,
+    "dangerous_statement": {
+      "dynamicSQL": false
+    },
     "db_operation_in_loop": {
       "exclude": [],
       "severity": "Error"
@@ -558,7 +560,10 @@
       "ignoreGlobalDefinition": false,
       "ignoreExceptions": false
     },
-    "sql_escape_host_variables": true,
+    "sql_escape_host_variables": {
+      "exclude": ["zcl_oao_shlp_ddic\\.clas\\.abap"],
+      "severity": "Error"
+    },
     "sql_value_conversion": {
       "exclude": [],
       "severity": "Error"
