@@ -129,6 +129,55 @@ CLASS ltcl_test IMPLEMENTATION.
     lo_property->set_type_edm_time( ).
     lo_property = lo_entity->create_property( 'Small' ).
     lo_property->set_type_edm_int16( ).
+    lo_property = lo_entity->create_property( 'Key' ).
+    lo_property->set_type_edm_guid( ).
+    lo_property = lo_entity->create_property( 'Blob' ).
+    lo_property->set_type_edm_binary( ).
+    lo_property->set_maxlength( 16 ).
+    lo_property = lo_entity->create_property( 'Stamp' ).
+    lo_property->set_type_edm_datetimeoffset( ).
+    lo_property->set_precison( 7 ).
+    lo_property = lo_entity->create_property( 'Big' ).
+    lo_property->set_type_edm_int64( ).
+    lo_property = lo_entity->create_property( 'Dbl' ).
+    lo_property->set_type_edm_double( ).
+    lo_property = lo_entity->create_property( 'Sgl' ).
+    lo_property->set_type_edm_single( ).
+    lo_property = lo_entity->create_property( 'Flt' ).
+    lo_property->set_type_edm_float( ).
+    lo_property = lo_entity->create_property( 'Tiny' ).
+    lo_property->set_type_edm_sbyte( ).
+
+    lo_oao ?= lo_entity->get_property( 'Key' ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'Key'
+                                                 io_property = lo_oao ).
+    FIND 'Type="Edm.Guid" Nullable="false" sap:unicode' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    lo_oao ?= lo_entity->get_property( 'Blob' ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'Blob'
+                                                 io_property = lo_oao ).
+    FIND 'Type="Edm.Binary" Nullable="false" MaxLength="16"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    lo_oao ?= lo_entity->get_property( 'Stamp' ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'Stamp'
+                                                 io_property = lo_oao ).
+    FIND 'Type="Edm.DateTimeOffset" Nullable="false" Precision="7"' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    lo_oao ?= lo_entity->get_property( 'Big' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_edm_type
+                                        exp = 'Edm.Int64' ).
+    lo_oao ?= lo_entity->get_property( 'Dbl' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_edm_type
+                                        exp = 'Edm.Double' ).
+    lo_oao ?= lo_entity->get_property( 'Sgl' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_edm_type
+                                        exp = 'Edm.Single' ).
+    lo_oao ?= lo_entity->get_property( 'Flt' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_edm_type
+                                        exp = 'Edm.Float' ).
+    lo_oao ?= lo_entity->get_property( 'Tiny' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_edm_type
+                                        exp = 'Edm.SByte' ).
     lo_property = lo_entity->create_property( 'Raw' ).
     lo_property->set_type_edm_byte( ).
     lo_property->set_as_content_type( ).

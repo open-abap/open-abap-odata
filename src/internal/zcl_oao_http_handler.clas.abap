@@ -255,7 +255,12 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-decimal.
 * SEGW: set_maxlength = total digits, set_precison = decimal places
         lv_facets = | Precision="{ io_property->mv_maxlength }" Scale="{ io_property->mv_precision }"|.
-      WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-datetime.
+      WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-binary.
+        IF io_property->mv_maxlength > 0.
+          lv_facets = | MaxLength="{ io_property->mv_maxlength }"|.
+        ENDIF.
+      WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-datetime
+          OR /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-datetimeoffset.
         lv_facets = | Precision="{ io_property->mv_precision }"|.
         IF io_property->mv_display_format IS NOT INITIAL.
           lv_facets = |{ lv_facets } sap:display-format="{ io_property->mv_display_format }"|.

@@ -56,6 +56,38 @@ CLASS zcl_oao_property IMPLEMENTATION.
     mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-time.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_guid.
+    mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-guid.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_binary.
+    mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-binary.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_datetimeoffset.
+    mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-datetimeoffset.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_int64.
+    mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-int64.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_double.
+    mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-double.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_single.
+    mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-single.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_float.
+    mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-float.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_property~set_type_edm_sbyte.
+    mv_edm_type = /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-sbyte.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_odata_property~set_precison.
     mv_precision = iv_precision.
   ENDMETHOD.
