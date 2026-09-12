@@ -2,6 +2,7 @@ CLASS /iwbep/cl_mgw_push_abs_model DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 
   PUBLIC SECTION.
     DATA model TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA vocab_anno_model TYPE REF TO /iwbep/if_mgw_vocan_model.
 
     METHODS constructor.
 

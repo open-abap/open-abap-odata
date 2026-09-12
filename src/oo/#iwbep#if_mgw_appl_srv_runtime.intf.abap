@@ -1,6 +1,51 @@
 INTERFACE /iwbep/if_mgw_appl_srv_runtime PUBLIC.
 
   TYPES ty_s_mgw_response_entity_cntxt TYPE string.
+
+  TYPES: BEGIN OF ty_s_operation_info,
+           entity_set     TYPE string,
+           operation_type TYPE string,
+           content_id     TYPE string,
+         END OF ty_s_operation_info.
+  TYPES ty_t_operation_info TYPE STANDARD TABLE OF ty_s_operation_info WITH DEFAULT KEY.
+
+  TYPES: BEGIN OF ty_s_changeset_request,
+           operation_no         TYPE i,
+           operation_type       TYPE string,
+           entity_set           TYPE string,
+           entry_provider       TYPE REF TO /iwbep/if_mgw_entry_provider,
+           tech_request_context TYPE REF TO object,
+         END OF ty_s_changeset_request.
+  TYPES ty_t_changeset_request TYPE STANDARD TABLE OF ty_s_changeset_request WITH DEFAULT KEY.
+
+  TYPES: BEGIN OF ty_s_changeset_response,
+           operation_no TYPE i,
+           entity_data  TYPE REF TO data,
+         END OF ty_s_changeset_response.
+  TYPES ty_t_changeset_response TYPE STANDARD TABLE OF ty_s_changeset_response WITH DEFAULT KEY.
+
+  METHODS changeset_begin
+    IMPORTING
+      it_operation_info TYPE ty_t_operation_info
+    CHANGING
+      cv_defer_mode     TYPE abap_bool
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
+  METHODS changeset_process
+    IMPORTING
+      it_changeset_request  TYPE ty_t_changeset_request
+    CHANGING
+      ct_changeset_response TYPE ty_t_changeset_response
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
+  METHODS changeset_end
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
   TYPES ty_s_mgw_response_context      TYPE /iwbep/if_mgw_appl_types=>ty_s_mgw_response_context.
   TYPES ty_s_media_resource            TYPE /iwbep/if_mgw_appl_types=>ty_s_media_resource.
 

@@ -112,6 +112,18 @@ CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
     RETURN.
   ENDMETHOD.
 
+  METHOD /iwbep/if_mgw_appl_srv_runtime~changeset_begin.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~changeset_process.
+    RETURN.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_appl_srv_runtime~changeset_end.
+    RETURN.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_appl_srv_runtime~create_deep_entity.
     RETURN.
   ENDMETHOD.

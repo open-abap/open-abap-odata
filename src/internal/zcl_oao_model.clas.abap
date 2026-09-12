@@ -23,12 +23,22 @@ CLASS zcl_oao_model DEFINITION PUBLIC.
     METHODS get_actions
       RETURNING
         VALUE(rt_actions) TYPE ty_actions.
+
+* schema-level vocabulary annotations (<Annotations Target=...>), raw XML
+    METHODS add_vocabulary_xml
+      IMPORTING
+        iv_xml TYPE string.
+
+    METHODS get_vocabulary_xml
+      RETURNING
+        VALUE(rt_xml) TYPE string_table.
   PRIVATE SECTION.
     DATA mv_namespace TYPE string.
     DATA mt_entity_names TYPE ty_entity_names.
     DATA mt_associations TYPE ty_associations.
     DATA mt_assoc_sets   TYPE ty_assoc_sets.
     DATA mt_actions      TYPE ty_actions.
+    DATA mt_vocabulary   TYPE string_table.
 
     TYPES: BEGIN OF ty_entity,
              entity_name TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
@@ -49,6 +59,14 @@ CLASS zcl_oao_model IMPLEMENTATION.
 
   METHOD get_actions.
     rt_actions = mt_actions.
+  ENDMETHOD.
+
+  METHOD add_vocabulary_xml.
+    APPEND iv_xml TO mt_vocabulary.
+  ENDMETHOD.
+
+  METHOD get_vocabulary_xml.
+    rt_xml = mt_vocabulary.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_model~create_association.
