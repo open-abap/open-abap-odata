@@ -1,6 +1,7 @@
 CLASS zcl_oao_model DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_model.
+    INTERFACES /iwbep/if_mgw_vocan_model.
 
     TYPES ty_entity_names TYPE STANDARD TABLE OF /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name WITH DEFAULT KEY.
 
@@ -50,6 +51,7 @@ CLASS zcl_oao_model DEFINITION PUBLIC.
     DATA mt_actions      TYPE ty_actions.
     DATA mt_complex_types TYPE ty_complex_types.
     DATA mt_vocabulary   TYPE string_table.
+    DATA mt_targets      TYPE zcl_oao_vocan=>ty_nodes.
 
     TYPES: BEGIN OF ty_entity,
              entity_name TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
@@ -100,7 +102,27 @@ CLASS zcl_oao_model IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_vocabulary_xml.
+    DATA lo_target TYPE REF TO zcl_oao_vocan.
+    DATA lv_xml    TYPE string.
+
     rt_xml = mt_vocabulary.
+* what the _MPC_EXT built through vocab_anno_model, rendered now
+    LOOP AT mt_targets INTO lo_target.
+      lv_xml = lo_target->render( '      ' ).
+      APPEND lv_xml TO rt_xml.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_vocan_model~create_annotations_target.
+    DATA lo_target TYPE REF TO zcl_oao_vocan.
+
+    CREATE OBJECT lo_target
+      EXPORTING
+        iv_kind      = zcl_oao_vocan=>gc_kind-target
+        iv_name      = iv_target
+        iv_qualifier = iv_qualifier.
+    APPEND lo_target TO mt_targets.
+    ro_annotations_target = lo_target.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_model~create_association.

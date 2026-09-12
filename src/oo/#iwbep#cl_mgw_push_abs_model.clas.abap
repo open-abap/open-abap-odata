@@ -20,6 +20,8 @@ CLASS /iwbep/cl_mgw_push_abs_model IMPLEMENTATION.
 
   METHOD constructor.
     CREATE OBJECT model TYPE zcl_oao_model.
+* the vocabulary annotations live in the same model object
+    vocab_anno_model ?= model.
   ENDMETHOD.
 
   METHOD get_last_modified.

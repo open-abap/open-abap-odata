@@ -38,6 +38,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS rfc_exception_handling FOR TESTING RAISING cx_static_check.
     METHODS rfc_local_destination FOR TESTING RAISING cx_static_check.
     METHODS dpc_log_message FOR TESTING RAISING cx_static_check.
+    METHODS vocabulary_annotations FOR TESTING RAISING cx_static_check.
     METHODS semantics_and_etag FOR TESTING RAISING cx_static_check.
     METHODS read_after_create_context FOR TESTING RAISING cx_static_check.
     METHODS search_help_runtime FOR TESTING RAISING cx_static_check.
@@ -857,4 +858,70 @@ CLASS ltcl_test IMPLEMENTATION.
         RETURN.
     ENDTRY.
   ENDMETHOD.
+
+  METHOD vocabulary_annotations.
+* what a SEGW-generated _MPC_EXT writes through vocab_anno_model: a value
+* list with a text arrangement on a property, a line item collection on the
+* entity type; printed as V4 vocabulary annotations in the V2 $metadata
+    DATA lo_model      TYPE REF TO zcl_oao_model.
+    DATA lo_vocan      TYPE REF TO /iwbep/if_mgw_vocan_model.
+    DATA lo_target     TYPE REF TO /iwbep/if_mgw_vocan_ann_target.
+    DATA lo_annotation TYPE REF TO /iwbep/if_mgw_vocan_annotation.
+    DATA lo_record     TYPE REF TO /iwbep/if_mgw_vocan_record.
+    DATA lo_collection TYPE REF TO /iwbep/if_mgw_vocan_collection.
+    DATA lt_xml        TYPE string_table.
+    DATA lv_xml        TYPE string.
+
+    CREATE OBJECT lo_model.
+    lo_vocan ?= lo_model.
+
+    lo_target = lo_vocan->create_annotations_target( 'ZSRV.Travel/Status' ).
+    lo_annotation = lo_target->create_annotation( 'com.sap.vocabularies.Common.v1.Text' ).
+    lo_annotation->create_simple_value( )->set_path( 'StatusText' ).
+    lo_annotation = lo_annotation->create_annotation( 'com.sap.vocabularies.UI.v1.TextArrangement' ).
+    lo_annotation->create_simple_value( )->set_enum_member_by_name( 'com.sap.vocabularies.UI.v1.TextArrangementType/TextFirst' ).
+    lo_annotation = lo_target->create_annotation( 'com.sap.vocabularies.Common.v1.ValueList' ).
+    lo_annotation->set_value_list_et_name( 'StatusVH' ).
+    lo_record = lo_annotation->create_record( ).
+    lo_record->create_property( 'Label' )->create_simple_value( )->set_string( 'Status & more' ).
+    lo_record->create_property( 'CollectionPath' )->create_simple_value( )->set_string( 'StatusVHSet' ).
+    lo_record->create_property( 'SearchSupported' )->create_simple_value( )->set_boolean( abap_true ).
+    lo_collection = lo_record->create_property( 'Parameters' )->create_collection( ).
+    lo_record = lo_collection->create_record( 'com.sap.vocabularies.Common.v1.ValueListParameterInOut' ).
+    lo_record->create_property( 'LocalDataProperty' )->create_simple_value( )->set_property_path( 'Status' ).
+    lo_record->create_property( 'ValueListProperty' )->create_simple_value( )->set_string( 'Status' ).
+
+    lo_target = lo_vocan->create_annotations_target( 'ZSRV.Travel' ).
+    lo_collection = lo_target->create_annotation( 'com.sap.vocabularies.UI.v1.SelectionFields' )->create_collection( ).
+    lo_collection->create_simple_value( )->set_property_path( 'Status' ).
+    lo_annotation = lo_target->create_annotation(
+      iv_term      = 'com.sap.vocabularies.UI.v1.LineItem'
+      iv_qualifier = 'Short' ).
+    lo_record = lo_annotation->create_collection( )->create_record( 'com.sap.vocabularies.UI.v1.DataField' ).
+    lo_record->create_property( 'Value' )->create_simple_value( )->set_path( 'TravelId' ).
+    lo_record->create_property( 'Label' )->create_simple_value( )->set_string( 'Travel' ).
+
+    lt_xml = lo_model->get_vocabulary_xml( ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_xml )
+                                        exp = 2 ).
+    READ TABLE lt_xml INDEX 1 INTO lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZSRV.Travel/Status">' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="StatusText">' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextFirst"/>' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<Record>' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<PropertyValue Property="Label" String="Status &amp; more"/>' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<PropertyValue Property="SearchSupported" Bool="true"/>' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<PropertyValue Property="Parameters">' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut">' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<PropertyValue Property="LocalDataProperty" PropertyPath="Status"/>' ) ).
+    READ TABLE lt_xml INDEX 2 INTO lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<Annotation Term="com.sap.vocabularies.UI.v1.SelectionFields">' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<PropertyPath>Status</PropertyPath>' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<Annotation Term="com.sap.vocabularies.UI.v1.LineItem" Qualifier="Short">' ) ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml CS '<PropertyValue Property="Value" Path="TravelId"/>' ) ).
+  ENDMETHOD.
+
 ENDCLASS.
