@@ -18,7 +18,7 @@
     "@abaplint/cli": "^2.120.50",
     "@abaplint/database-sqlite": "^2.13.83",
     "chai": "^5.3.3",
-    "mocha": "^11.7.6",
+    "mocha": "^11.8.0",
     "@abaplint/runtime": "^2.13.85",
     "@abaplint/transpiler-cli": "^2.13.85",
     "express": "^4.22.2"
