@@ -2,6 +2,9 @@ CLASS zcl_oao_entity_typ DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES /iwbep/if_mgw_odata_entity_typ.
 
+* sap: annotations of the entity type (semantics="aggregate", label, ...)
+    DATA mo_annotation TYPE REF TO zcl_oao_annotation.
+
     TYPES: BEGIN OF ty_entity_set,
              name       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
              entity_set TYPE REF TO zcl_oao_entity_set,
@@ -31,6 +34,13 @@ CLASS zcl_oao_entity_typ IMPLEMENTATION.
 
   METHOD /iwbep/if_mgw_odata_item~set_label_from_text_element.
     ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
+  METHOD /iwbep/if_mgw_odata_annotatabl~create_annotation.
+    IF mo_annotation IS NOT BOUND.
+      CREATE OBJECT mo_annotation.
+    ENDIF.
+    ro_annotation = mo_annotation.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~create_navigation_property.
