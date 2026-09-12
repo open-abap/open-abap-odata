@@ -77,4 +77,12 @@ INTERFACE /iwbep/if_mgw_odata_property PUBLIC.
 
   METHODS set_as_content_type.
 
+* sap:semantics of the property (email, tel, bday, currency-code, ...)
+  METHODS set_semantic
+    IMPORTING
+      iv_semantic TYPE clike.
+
+* the property carries the ETag of the entity, ConcurrencyMode="Fixed"
+  METHODS set_as_etag.
+
 ENDINTERFACE.

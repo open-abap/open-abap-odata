@@ -258,6 +258,7 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
 
   METHOD property_xml.
     DATA lv_facets  TYPE string.
+    DATA lv_semantics TYPE string.
     DATA lv_label   TYPE string.
     DATA lt_builtin TYPE string_table.
 
@@ -281,6 +282,7 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     APPEND 'updatable' TO lt_builtin.
     APPEND 'sortable' TO lt_builtin.
     APPEND 'filterable' TO lt_builtin.
+    APPEND 'semantics' TO lt_builtin.
 
     CASE io_property->mv_edm_type.
       WHEN /iwbep/if_mgw_med_odata_types=>gcs_edm_data_types-string.
@@ -303,6 +305,12 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       WHEN OTHERS.
         lv_facets = ``.
     ENDCASE.
+    IF io_property->mv_etag = abap_true.
+      lv_facets = |{ lv_facets } ConcurrencyMode="Fixed"|.
+    ENDIF.
+    IF io_property->mv_semantic IS NOT INITIAL.
+      lv_semantics = | sap:semantics="{ io_property->mv_semantic }"|.
+    ENDIF.
 
     rv_xml =
       |        <Property Name="{ iv_name }" Type="{ io_property->mv_edm_type }" Nullable="{
@@ -311,8 +319,8 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
         map_boolean( io_property->mv_creatable ) }" sap:updatable="{
         map_boolean( io_property->mv_updatable ) }" sap:sortable="{
         map_boolean( io_property->mv_sortable ) }" sap:filterable="{
-        map_boolean( io_property->mv_filterable ) }"{ custom_annotations_xml( io_annotation = io_property->mo_annotation
-                                                                              it_builtin    = lt_builtin ) }/>\n|.
+        map_boolean( io_property->mv_filterable ) }"{ lv_semantics }{ custom_annotations_xml( io_annotation = io_property->mo_annotation
+                                                                                              it_builtin    = lt_builtin ) }/>\n|.
   ENDMETHOD.
 
   METHOD data.

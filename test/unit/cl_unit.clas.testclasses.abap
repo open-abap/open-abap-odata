@@ -11,6 +11,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS actions FOR TESTING RAISING cx_static_check.
     METHODS complex_types FOR TESTING RAISING cx_static_check.
     METHODS sb_odata_types FOR TESTING RAISING cx_static_check.
+    METHODS semantics_and_etag FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
@@ -351,6 +352,43 @@ CLASS ltcl_test IMPLEMENTATION.
     lv_int2 = 32767.
     cl_abap_unit_assert=>assert_equals( act = lv_int2
                                         exp = 32767 ).
+  ENDMETHOD.
+
+  METHOD semantics_and_etag.
+* SEGW: set_semantic( 'email' ) and set_as_etag( ) on a property, printed
+* as sap:semantics and ConcurrencyMode="Fixed" like the Gateway does
+    DATA lo_model    TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA lo_entity   TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_property TYPE REF TO /iwbep/if_mgw_odata_property.
+    DATA lo_oao      TYPE REF TO zcl_oao_property.
+    DATA lv_xml      TYPE string.
+
+    CREATE OBJECT lo_model TYPE zcl_oao_model.
+    lo_entity = lo_model->create_entity_type( 'Partner' ).
+    lo_property = lo_entity->create_property( 'Email' ).
+    lo_property->set_type_edm_string( ).
+    lo_property->set_semantic( 'email' ).
+    lo_property = lo_entity->create_property( 'Changed' ).
+    lo_property->set_type_edm_datetime( ).
+    lo_property->set_precison( 7 ).
+    lo_property->set_as_etag( ).
+
+    lo_oao ?= lo_entity->get_property( 'Email' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_semantic
+                                        exp = 'email' ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'Email'
+                                                 io_property = lo_oao ).
+    FIND 'sap:filterable="false" sap:semantics="email"/>' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+
+    lo_oao ?= lo_entity->get_property( 'Changed' ).
+    cl_abap_unit_assert=>assert_true( lo_oao->mv_etag ).
+    lv_xml = zcl_oao_http_handler=>property_xml( iv_name     = 'Changed'
+                                                 io_property = lo_oao ).
+    FIND 'Precision="7" ConcurrencyMode="Fixed" sap:unicode' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( ).
+    FIND 'sap:semantics' IN lv_xml.
+    cl_abap_unit_assert=>assert_subrc( exp = 4 ).
   ENDMETHOD.
 
   METHOD unknown_service.
