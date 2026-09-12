@@ -32,6 +32,12 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS actions FOR TESTING RAISING cx_static_check.
     METHODS complex_types FOR TESTING RAISING cx_static_check.
     METHODS sb_odata_types FOR TESTING RAISING cx_static_check.
+    METHODS logger FOR TESTING RAISING cx_static_check.
+    METHODS rfc_save_log_error FOR TESTING RAISING cx_static_check.
+    METHODS rfc_save_log_success FOR TESTING RAISING cx_static_check.
+    METHODS rfc_exception_handling FOR TESTING RAISING cx_static_check.
+    METHODS rfc_local_destination FOR TESTING RAISING cx_static_check.
+    METHODS dpc_log_message FOR TESTING RAISING cx_static_check.
     METHODS semantics_and_etag FOR TESTING RAISING cx_static_check.
     METHODS read_after_create_context FOR TESTING RAISING cx_static_check.
     METHODS search_help_runtime FOR TESTING RAISING cx_static_check.
@@ -669,6 +675,176 @@ CLASS ltcl_test IMPLEMENTATION.
     DELETE FROM zsegw WHERE something1 = 'SHLP1' OR something1 = 'SHLP2' OR something1 = 'OTHER'.
     cl_abap_unit_assert=>assert_subrc( ).
     zcl_oao_shlp_data=>clear( ).
+  ENDMETHOD.
+
+  METHOD logger.
+    DATA lo_logger   TYPE REF TO /iwbep/cl_cos_logger.
+    DATA lt_messages TYPE /iwbep/cl_cos_logger=>ty_messages.
+    DATA ls_message  LIKE LINE OF lt_messages.
+    DATA lv_handle   TYPE string.
+
+    CREATE OBJECT lo_logger.
+    lv_handle = lo_logger->log_message( iv_msg_type = /iwbep/cl_cos_logger=>error
+                                        iv_msg_text = 'plain  text'
+                                        iv_agent    = 'TEST' ).
+    cl_abap_unit_assert=>assert_equals( act = lv_handle
+                                        exp = '1' ).
+    lt_messages = lo_logger->get_messages( ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_messages )
+                                        exp = 1 ).
+    READ TABLE lt_messages INDEX 1 INTO ls_message.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = ls_message-msg_type
+                                        exp = 'E' ).
+    cl_abap_unit_assert=>assert_equals( act = ls_message-text
+                                        exp = 'plain text' ).
+    cl_abap_unit_assert=>assert_equals( act = ls_message-agent
+                                        exp = 'TEST' ).
+  ENDMETHOD.
+
+  METHOD rfc_save_log_error.
+* an E in the BAPI return ends the request with a business exception that
+* carries the message container
+    DATA lo_logger    TYPE REF TO /iwbep/cl_cos_logger.
+    DATA lo_container TYPE REF TO zcl_oao_msg_container.
+    DATA lt_return    TYPE bapirettab.
+    DATA ls_return    TYPE bapiret2.
+    DATA lx_busi      TYPE REF TO /iwbep/cx_mgw_busi_exception.
+    DATA lt_messages  TYPE bapirettab.
+
+    CREATE OBJECT lo_logger.
+    CREATE OBJECT lo_container.
+    ls_return-type    = 'S'.
+    ls_return-message = 'fine'.
+    APPEND ls_return TO lt_return.
+    ls_return-type    = 'E'.
+    ls_return-message = 'not fine'.
+    APPEND ls_return TO lt_return.
+
+    TRY.
+        /iwbep/cl_sb_gen_dpc_rt_util=>rfc_save_log(
+          it_return            = lt_return
+          iv_entity_type       = 'Thing'
+          io_logger            = lo_logger
+          io_message_container = lo_container ).
+        cl_abap_unit_assert=>fail( 'expected a business exception' ).
+      CATCH /iwbep/cx_mgw_busi_exception INTO lx_busi.
+        cl_abap_unit_assert=>assert_equals( act = lx_busi->message
+                                            exp = 'not fine' ).
+        cl_abap_unit_assert=>assert_bound( lx_busi->message_container ).
+    ENDTRY.
+    lt_messages = lo_container->get_messages( ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_messages )
+                                        exp = 2 ).
+    cl_abap_unit_assert=>assert_true( lo_container->has_errors( ) ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lo_logger->get_messages( ) )
+                                        exp = 2 ).
+  ENDMETHOD.
+
+  METHOD rfc_save_log_success.
+    DATA lo_logger    TYPE REF TO /iwbep/cl_cos_logger.
+    DATA lo_container TYPE REF TO zcl_oao_msg_container.
+    DATA ls_return    TYPE bapiret2.
+    DATA lo_facade    TYPE REF TO /iwbep/if_mgw_dp_facade.
+
+    CREATE OBJECT lo_logger.
+    CREATE OBJECT lo_container.
+    ls_return-type    = 'S'.
+    ls_return-message = 'saved'.
+    /iwbep/cl_sb_gen_dpc_rt_util=>rfc_save_log(
+      is_return            = ls_return
+      iv_entity_type       = 'Thing'
+      io_logger            = lo_logger
+      io_message_container = lo_container ).
+    cl_abap_unit_assert=>assert_false( lo_container->has_errors( ) ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lo_container->get_messages( ) )
+                                        exp = 1 ).
+    cl_abap_unit_assert=>assert_equals( act = /iwbep/cl_sb_gen_dpc_rt_util=>get_rfc_destination( lo_facade )
+                                        exp = 'NONE' ).
+  ENDMETHOD.
+
+  METHOD rfc_exception_handling.
+    DATA lo_logger TYPE REF TO /iwbep/cl_cos_logger.
+    DATA lx_busi   TYPE REF TO /iwbep/cx_mgw_busi_exception.
+    DATA lv_tech   TYPE abap_bool.
+
+    CREATE OBJECT lo_logger.
+    TRY.
+        /iwbep/cl_sb_gen_dpc_rt_util=>rfc_exception_handling(
+          iv_subrc            = 1000
+          iv_exp_message_text = 'no connection'
+          io_logger           = lo_logger ).
+      CATCH /iwbep/cx_mgw_tech_exception.
+        lv_tech = abap_true.
+    ENDTRY.
+    cl_abap_unit_assert=>assert_true( lv_tech ).
+
+    TRY.
+        /iwbep/cl_sb_gen_dpc_rt_util=>rfc_exception_handling(
+          iv_subrc            = 4
+          iv_exp_message_text = 'function raised' ).
+        cl_abap_unit_assert=>fail( 'expected a business exception' ).
+      CATCH /iwbep/cx_mgw_busi_exception INTO lx_busi.
+        cl_abap_unit_assert=>assert_equals( act = lx_busi->message
+                                            exp = 'function raised' ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD rfc_local_destination.
+* creating any DPC registers 'NONE' as the local destination, after which
+* CALL FUNCTION ... DESTINATION 'NONE' reaches the function modules here
+    DATA lo_dpc      TYPE REF TO zcl_zsegw_dpc_ext.
+    DATA lv_timezone TYPE timezone.
+    DATA lv_illegal  TYPE abap_bool.
+
+    CREATE OBJECT lo_dpc.
+    CALL FUNCTION 'GET_SYSTEM_TIMEZONE'
+      DESTINATION 'NONE'
+      IMPORTING
+        timezone              = lv_timezone
+      EXCEPTIONS
+        system_failure        = 1
+        communication_failure = 2
+        resource_failure      = 3
+        OTHERS                = 4.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( act = lv_timezone
+                                        exp = 'UTC' ).
+
+* a function module that is not here is the same error as without DESTINATION
+    TRY.
+        CALL FUNCTION 'NOT_THERE'
+          DESTINATION 'NONE'
+          EXCEPTIONS
+            system_failure        = 1
+            communication_failure = 2
+            resource_failure      = 3
+            OTHERS                = 4.
+      CATCH cx_sy_dyn_call_illegal_func.
+        lv_illegal = abap_true.
+    ENDTRY.
+    cl_abap_unit_assert=>assert_true( lv_illegal ).
+  ENDMETHOD.
+
+  METHOD dpc_log_message.
+* the generated log_message goes through mo_context->get_logger( )
+    DATA lo_dpc    TYPE REF TO zcl_zsegw_dpc_ext.
+    DATA lo_comm   TYPE REF TO /iwbep/if_sb_dpc_comm_services.
+    DATA lo_conv   TYPE REF TO /iwbep/if_mgw_conv_srv_runtime.
+    DATA lo_logger TYPE REF TO /iwbep/cl_cos_logger.
+
+    CREATE OBJECT lo_dpc.
+    lo_comm = lo_dpc.
+    lo_conv = lo_dpc.
+    lo_comm->log_message( iv_msg_type   = 'S'
+                          iv_msg_id     = '00'
+                          iv_msg_number = '001'
+                          iv_msg_v1     = 'hello' ).
+    lo_logger = lo_conv->get_logger( ).
+    cl_abap_unit_assert=>assert_bound( lo_logger ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lo_logger->get_messages( ) )
+                                        exp = 1 ).
+    cl_abap_unit_assert=>assert_bound( lo_conv->get_message_container( ) ).
   ENDMETHOD.
 
   METHOD unknown_service.

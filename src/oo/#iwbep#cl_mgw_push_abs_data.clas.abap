@@ -11,8 +11,12 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     INCLUDE TYPE /iwbep/if_mgw_core_srv_runtime=>ty_s_media_resource.
     TYPES END OF ty_s_media_resource.
 
+* every DPC gets a logger and a context, the generated code reaches both
+    METHODS constructor.
+
   PROTECTED SECTION.
     DATA mo_context TYPE REF TO /iwbep/if_mgw_context.
+    DATA mo_logger  TYPE REF TO /iwbep/cl_cos_logger.
     DATA mr_request_details TYPE REF TO /iwbep/if_mgw_core_srv_runtime=>ty_s_mgw_request_context.
 
     METHODS check_subscription_authority
@@ -25,6 +29,26 @@ CLASS /iwbep/cl_mgw_push_abs_data DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 ENDCLASS.
 
 CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
+
+  METHOD constructor.
+    DATA lv_class TYPE string.
+
+    CREATE OBJECT mo_logger.
+    CREATE OBJECT mo_context TYPE zcl_oao_context
+      EXPORTING
+        io_logger = mo_logger.
+* CALL FUNCTION ... DESTINATION 'NONE' in generated code runs locally; on
+* a Gateway 'NONE' is a real destination and the class is not there
+    lv_class = 'ZCL_OAO_RFC_DESTINATION'.
+    TRY.
+        CALL METHOD (lv_class)=>register_local
+          EXPORTING
+            iv_name = 'NONE'.
+      CATCH cx_sy_dyn_call_illegal_class.
+        RETURN.
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD /iwbep/if_mgw_appl_srv_runtime~create_stream.
     ASSERT 1 = 'todo'.
   ENDMETHOD.
@@ -93,7 +117,7 @@ CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_conv_srv_runtime~get_logger.
-    RETURN.
+    ro_logger = mo_logger.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_appl_srv_runtime~create_entity.
@@ -149,7 +173,7 @@ CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_conv_srv_runtime~get_message_container.
-    RETURN.
+    container = /iwbep/cl_mgw_msg_container=>get_mgw_msg_container( ).
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_conv_srv_runtime~set_header.
