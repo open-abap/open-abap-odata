@@ -6,6 +6,7 @@ CLASS zcl_oao_model DEFINITION PUBLIC.
 
     TYPES ty_associations TYPE STANDARD TABLE OF REF TO zcl_oao_association WITH DEFAULT KEY.
     TYPES ty_assoc_sets   TYPE STANDARD TABLE OF REF TO zcl_oao_assoc_set WITH DEFAULT KEY.
+    TYPES ty_actions      TYPE STANDARD TABLE OF REF TO zcl_oao_action WITH DEFAULT KEY.
 
     METHODS get_entity_type_names
       RETURNING
@@ -18,11 +19,16 @@ CLASS zcl_oao_model DEFINITION PUBLIC.
     METHODS get_association_sets
       RETURNING
         VALUE(rt_sets) TYPE ty_assoc_sets.
+
+    METHODS get_actions
+      RETURNING
+        VALUE(rt_actions) TYPE ty_actions.
   PRIVATE SECTION.
     DATA mv_namespace TYPE string.
     DATA mt_entity_names TYPE ty_entity_names.
     DATA mt_associations TYPE ty_associations.
     DATA mt_assoc_sets   TYPE ty_assoc_sets.
+    DATA mt_actions      TYPE ty_actions.
 
     TYPES: BEGIN OF ty_entity,
              entity_name TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
@@ -33,7 +39,16 @@ ENDCLASS.
 
 CLASS zcl_oao_model IMPLEMENTATION.
   METHOD /iwbep/if_mgw_odata_model~create_action.
-    ASSERT 1 = 'todo'.
+    DATA lo_action TYPE REF TO zcl_oao_action.
+
+    CREATE OBJECT lo_action.
+    lo_action->mv_name = iv_action_name.
+    APPEND lo_action TO mt_actions.
+    ro_action = lo_action.
+  ENDMETHOD.
+
+  METHOD get_actions.
+    rt_actions = mt_actions.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_model~create_association.
