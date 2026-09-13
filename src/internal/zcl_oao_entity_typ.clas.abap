@@ -4,6 +4,8 @@ CLASS zcl_oao_entity_typ DEFINITION PUBLIC.
 
 * sap: annotations of the entity type (semantics="aggregate", label, ...)
     DATA mo_annotation TYPE REF TO zcl_oao_annotation.
+* a media entity: its content is a stream, read and written at <entity>/$value
+    DATA mv_is_media   TYPE abap_bool.
 
     TYPES: BEGIN OF ty_entity_set,
              name       TYPE /iwbep/if_mgw_med_odata_types=>ty_e_med_entity_name,
@@ -73,7 +75,7 @@ CLASS zcl_oao_entity_typ IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~set_is_media.
-    ASSERT 1 = 'todo'.
+    mv_is_media = iv_is_media.
   ENDMETHOD.
 
   METHOD /iwbep/if_mgw_odata_entity_typ~bind_structure.

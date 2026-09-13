@@ -442,6 +442,7 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
     DATA lt_type_builtin TYPE string_table.
     DATA lt_vocabulary   TYPE string_table.
     DATA lv_vocabulary   TYPE string.
+    DATA lv_media        TYPE string.
 
     lo_mpc = zcl_oao_registry=>create_mpc( iv_service ).
     lo_mpc->define( ).
@@ -469,9 +470,16 @@ CLASS zcl_oao_http_handler IMPLEMENTATION.
       lo_entity ?= lo_model->/iwbep/if_mgw_odata_model~get_entity_type( lv_entity_type ).
       lt_properties = lo_entity->/iwbep/if_mgw_odata_entity_typ~get_properties( ).
 
+* a media entity (set_is_media in the MPC) carries its content as a stream:
+* v2 marks the type with m:HasStream, the client then reads <entity>/$value
+      lv_media = ''.
+      IF lo_entity->mv_is_media = abap_true.
+        lv_media = ' m:HasStream="true"'.
+      ENDIF.
+
       rv_xml = rv_xml &&
-        |      <EntityType Name="{ lv_entity_type }"{ custom_annotations_xml( io_annotation = lo_entity->mo_annotation
-                                                                              it_builtin    = lt_type_builtin ) } sap:content-version="1">\n| &&
+        |      <EntityType Name="{ lv_entity_type }"{ lv_media }{ custom_annotations_xml( io_annotation = lo_entity->mo_annotation
+                                                                                          it_builtin    = lt_type_builtin ) } sap:content-version="1">\n| &&
         |        <Key>\n|.
       LOOP AT lt_properties INTO ls_property.
         lo_property ?= ls_property-property.
