@@ -29,6 +29,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS edm_types FOR TESTING RAISING cx_static_check.
     METHODS date_display_format FOR TESTING RAISING cx_static_check.
     METHODS label_annotation FOR TESTING RAISING cx_static_check.
+    METHODS media_entity FOR TESTING RAISING cx_static_check.
     METHODS associations FOR TESTING RAISING cx_static_check.
     METHODS actions FOR TESTING RAISING cx_static_check.
     METHODS complex_types FOR TESTING RAISING cx_static_check.
@@ -157,6 +158,23 @@ CLASS ltcl_test IMPLEMENTATION.
                                                  io_property = lo_oao ).
     FIND 'sap:label="DESCRIPTION"' IN lv_xml.
     cl_abap_unit_assert=>assert_subrc( ).
+  ENDMETHOD.
+
+  METHOD media_entity.
+* set_is_media in the MPC: the entity type carries m:HasStream in $metadata,
+* which is how a v2 client learns that <entity>/$value is there
+    DATA lo_model  TYPE REF TO /iwbep/if_mgw_odata_model.
+    DATA lo_entity TYPE REF TO /iwbep/if_mgw_odata_entity_typ.
+    DATA lo_oao    TYPE REF TO zcl_oao_entity_typ.
+
+    CREATE OBJECT lo_model TYPE zcl_oao_model.
+    lo_entity = lo_model->create_entity_type( 'Picture' ).
+    lo_oao ?= lo_entity.
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_is_media
+                                        exp = abap_false ).
+    lo_entity->set_is_media( 'X' ).
+    cl_abap_unit_assert=>assert_equals( act = lo_oao->mv_is_media
+                                        exp = abap_true ).
   ENDMETHOD.
 
   METHOD edm_types.
