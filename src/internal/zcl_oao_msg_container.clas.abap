@@ -16,6 +16,9 @@ CLASS zcl_oao_msg_container DEFINITION PUBLIC.
 ENDCLASS.
 
 CLASS zcl_oao_msg_container IMPLEMENTATION.
+  METHOD /iwbep/if_message_container~add_message.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
 
   METHOD /iwbep/if_message_container~add_message_from_bapi.
     APPEND is_bapi_message TO mt_messages.
