@@ -705,6 +705,19 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( act = ls_result-field_value
                                         exp = 'ZZ' ).
 
+* no selection: every row, three records of two fields
+    CLEAR lt_result.
+    lo_sh_data->/iwbep/if_sb_gendpc_shlp_data~get_search_help_values(
+      EXPORTING
+        iv_shlp_name   = 'zsegw_sh'
+        iv_sort        = abap_true
+      IMPORTING
+        et_return_list = lt_result
+        es_message     = ls_message ).
+    cl_abap_unit_assert=>assert_initial( ls_message ).
+    cl_abap_unit_assert=>assert_equals( act = lines( lt_result )
+                                        exp = 6 ).
+
 * iv_maxrows cuts after sorting
     lo_sh_data->/iwbep/if_sb_gendpc_shlp_data~get_search_help_values(
       EXPORTING

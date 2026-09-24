@@ -253,9 +253,8 @@ CLASS zcl_oao_shlp_ddic IMPLEMENTATION.
 
     CREATE DATA lr_rows TYPE STANDARD TABLE OF (mv_selmethod).
     ASSIGN lr_rows->* TO <lt_rows>.
-    IF lv_where IS INITIAL.
-      lv_where = '1 = 1'.
-    ENDIF.
+* an empty condition selects every row; '1 = 1' in its place raises
+* CX_SY_DYNAMIC_OSQL_SEMANTICS on ABAP 7.5x (measured)
     SELECT * FROM (mv_selmethod)
       INTO CORRESPONDING FIELDS OF TABLE <lt_rows>
       WHERE (lv_where)
