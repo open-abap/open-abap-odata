@@ -123,4 +123,35 @@ INTERFACE /iwbep/if_mgw_core_srv_runtime PUBLIC.
       iv_version               TYPE string
       io_context               TYPE string.
 
+  TYPES ty_s_mgw_response_context TYPE /iwbep/if_mgw_core_types=>ty_s_mgw_response_context.
+
+  TYPES: BEGIN OF ty_s_inline_info,
+           is_inline_initial TYPE c LENGTH 1,
+           entry_no          TYPE i,
+           expand_part       TYPE string,
+           tech_expand_part  TYPE string,
+         END OF ty_s_inline_info.
+
+  TYPES ty_t_inline_info TYPE STANDARD TABLE OF ty_s_inline_info WITH DEFAULT KEY.
+
+  METHODS read_entityset
+    IMPORTING
+      iv_entity_name               TYPE string
+      iv_source_name               TYPE string
+      is_paging                    TYPE /iwbep/s_mgw_paging
+      it_order                     TYPE /iwbep/t_mgw_sorting_order
+      it_filter_select_options     TYPE /iwbep/t_mgw_select_option
+      is_request_details           TYPE ty_s_mgw_request_context
+      iv_do_return_provider_format TYPE abap_bool DEFAULT abap_false
+    CHANGING
+      cv_response_body             TYPE xstring OPTIONAL
+      ct_headers                   TYPE tihttpnvp
+      cr_entityset                 TYPE REF TO data
+      cr_deleted_entityset         TYPE REF TO data OPTIONAL
+      cs_response_context          TYPE ty_s_mgw_response_context OPTIONAL
+      ct_inline_info               TYPE ty_t_inline_info OPTIONAL
+    RAISING
+      /iwbep/cx_mgw_busi_exception
+      /iwbep/cx_mgw_tech_exception.
+
 ENDINTERFACE.
