@@ -30,6 +30,10 @@ ENDCLASS.
 
 CLASS /iwbep/cl_mgw_push_abs_data IMPLEMENTATION.
 
+  METHOD /iwbep/if_mgw_core_srv_runtime~read_entityset.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
+
   METHOD constructor.
     DATA lv_class TYPE string.
 
