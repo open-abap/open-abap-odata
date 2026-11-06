@@ -1,7 +1,7 @@
 import express from 'express';
 import {initializeABAP} from "../output/init.mjs";
-import {cl_express_icf_shim} from "../output/cl_express_icf_shim.clas.mjs";
-import {zcl_oao_registry} from "../output/zcl_oao_registry.clas.mjs";
+import {cl_express_icf_shim} from "../output/express-icf-shim/cl_express_icf_shim.clas.mjs";
+import {zcl_oao_registry} from "../output/project/zcl_oao_registry.clas.mjs";
 
 await initializeABAP();
 
